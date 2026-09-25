@@ -21,6 +21,8 @@ const ALL_THEMES: Theme[] = [
   'Sécurité',
   'Angular/RxJS',
   'RAG',
+  'Design Patterns',
+  'System Design',
   'Entretien comportemental',
 ]
 

@@ -14,6 +14,8 @@ export type Theme =
   | 'Sécurité'
   | 'Angular/RxJS'
   | 'RAG'
+  | 'Design Patterns'
+  | 'System Design'
   | 'Entretien comportemental'
 
 export type Difficulty = 'junior' | 'intermediate' | 'confirmed' | 'advanced'
