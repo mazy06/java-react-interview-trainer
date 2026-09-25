@@ -8,6 +8,7 @@ import { StatisticsPage } from './pages/StatisticsPage'
 import { InterviewPage } from './pages/InterviewPage'
 import { FlashcardsPage } from './pages/FlashcardsPage'
 import { ImportExportPage } from './pages/ImportExportPage'
+import { AlgorithmsPage } from './pages/AlgorithmsPage'
 
 export function AppRoutes() {
   return (
@@ -20,6 +21,7 @@ export function AppRoutes() {
         <Route path="/statistics" element={<StatisticsPage />} />
         <Route path="/interview" element={<InterviewPage />} />
         <Route path="/flashcards" element={<FlashcardsPage />} />
+        <Route path="/algorithms" element={<AlgorithmsPage />} />
         <Route path="/data" element={<ImportExportPage />} />
       </Route>
     </Routes>

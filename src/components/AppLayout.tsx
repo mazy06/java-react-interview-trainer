@@ -5,6 +5,7 @@ const NAV_LINKS = [
   { to: '/', label: 'Tableau de bord', end: true },
   { to: '/statistics', label: 'Statistiques' },
   { to: '/flashcards', label: 'Flashcards' },
+  { to: '/algorithms', label: 'Algorithmes' },
   { to: '/interview', label: 'Entretien' },
   { to: '/data', label: 'Données' },
 ]

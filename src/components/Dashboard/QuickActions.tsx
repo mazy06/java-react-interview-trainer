@@ -1,5 +1,15 @@
 import { Link } from 'react-router-dom'
-import { Play, RotateCcw, Timer, Mic, BarChart3, Star, DatabaseBackup, Layers } from 'lucide-react'
+import {
+  Play,
+  RotateCcw,
+  Timer,
+  Mic,
+  BarChart3,
+  Star,
+  DatabaseBackup,
+  Layers,
+  Braces,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface Action {
@@ -22,6 +32,7 @@ const ACTIONS: Action[] = [
   { to: '/statistics', label: 'Statistiques', icon: BarChart3, tone: 'default' },
   { to: '/session/new?mode=favorites', label: 'Favoris', icon: Star, tone: 'default' },
   { to: '/flashcards', label: 'Flashcards', icon: Layers, tone: 'default' },
+  { to: '/algorithms', label: 'Katas Big O', icon: Braces, tone: 'default' },
   { to: '/data', label: 'Import / export', icon: DatabaseBackup, tone: 'default' },
 ]
 
