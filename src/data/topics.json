@@ -1,0 +1,164 @@
+[
+  {
+    "id": "java",
+    "theme": "Java",
+    "label": "Java",
+    "description": "Le langage : types, collections, exceptions, streams, concurrence, JVM et versions récentes.",
+    "subthemes": [
+      "Types et variables",
+      "Autoboxing",
+      "Object et égalité",
+      "Collections",
+      "Exceptions",
+      "Génériques",
+      "Optional",
+      "Streams",
+      "Dates et BigDecimal",
+      "Concurrence",
+      "Threads virtuels",
+      "JVM et mémoire"
+    ]
+  },
+  {
+    "id": "spring",
+    "theme": "Spring",
+    "label": "Spring & Spring Boot",
+    "description": "IoC, Boot, AOP, transactions, REST, gestion des erreurs et traitements planifiés.",
+    "subthemes": [
+      "IoC et injection",
+      "Spring Boot",
+      "AOP",
+      "Transactions",
+      "Propagation",
+      "REST",
+      "Gestion des erreurs",
+      "JDBC",
+      "Traitements planifiés"
+    ]
+  },
+  {
+    "id": "jpa-hibernate",
+    "theme": "JPA/Hibernate",
+    "label": "JPA & Hibernate",
+    "description": "Cycle de vie des entités, mapping, chargement LAZY/EAGER, N+1, pagination, verrous et caches.",
+    "subthemes": [
+      "Cycle de vie",
+      "Mapping",
+      "Relations",
+      "Chargement paresseux",
+      "N+1",
+      "Pagination",
+      "Verrous",
+      "Héritage",
+      "Caches"
+    ]
+  },
+  {
+    "id": "sql",
+    "theme": "SQL",
+    "label": "SQL & bases de données",
+    "description": "Jointures, NULL, agrégation, index, transactions, isolation et pagination stable.",
+    "subthemes": [
+      "Jointures",
+      "NULL",
+      "Agrégation",
+      "Pagination",
+      "Index",
+      "Transactions ACID",
+      "Isolation",
+      "Multi-tenant"
+    ]
+  },
+  {
+    "id": "javascript",
+    "theme": "JavaScript",
+    "label": "JavaScript",
+    "description": "Portée, égalité, closures, asynchronisme, event loop et pièges classiques.",
+    "subthemes": ["Scope", "Égalité", "Closures", "Asynchrone", "Event loop", "fetch"]
+  },
+  {
+    "id": "typescript",
+    "theme": "TypeScript",
+    "label": "TypeScript",
+    "description": "Système de types, unions discriminées, génériques et validation runtime.",
+    "subthemes": ["Types", "Unions discriminées", "Génériques", "Validation runtime"]
+  },
+  {
+    "id": "react",
+    "theme": "React",
+    "label": "React",
+    "description": "Rendu, state, effets, formulaires, performance, accessibilité et données serveur.",
+    "subthemes": [
+      "Composants",
+      "State",
+      "Effets",
+      "Formulaires",
+      "Performance",
+      "Accessibilité",
+      "Données distantes"
+    ]
+  },
+  {
+    "id": "tests",
+    "theme": "Tests",
+    "label": "Tests & qualité",
+    "description": "Niveaux de test, JUnit, Mockito, Testcontainers, React Testing Library, TDD.",
+    "subthemes": ["Niveaux de test", "TDD", "Mockito", "Spring Test", "React Testing Library"]
+  },
+  {
+    "id": "maven",
+    "theme": "Maven",
+    "label": "Maven",
+    "description": "Lifecycle, dépendances, BOM et build reproductible.",
+    "subthemes": ["Lifecycle", "Dépendances", "BOM", "Build reproductible"]
+  },
+  {
+    "id": "git-gitlab",
+    "theme": "Git/GitLab",
+    "label": "Git & GitLab CI/CD",
+    "description": "Historique Git, merge/rebase, pipelines, sécurité des secrets en CI.",
+    "subthemes": ["Historique Git", "Merge et rebase", "Pipeline CI", "Sécurité CI"]
+  },
+  {
+    "id": "docker",
+    "theme": "Docker",
+    "label": "Docker",
+    "description": "Images, Dockerfile, multi-stage build et diagnostic de conteneur.",
+    "subthemes": ["Image vs conteneur", "Dockerfile", "Multi-stage build", "Diagnostic"]
+  },
+  {
+    "id": "architecture",
+    "theme": "Architecture",
+    "label": "Architecture & exploitation",
+    "description": "SOLID, patterns, microservices, résilience, Kafka et observabilité.",
+    "subthemes": ["SOLID", "Patterns", "Microservices", "Résilience", "Kafka", "Observabilité"]
+  },
+  {
+    "id": "securite",
+    "theme": "Sécurité",
+    "label": "Sécurité",
+    "description": "Authentification, OAuth2/JWT, CORS/CSRF/XSS, SSRF et gestion des secrets.",
+    "subthemes": ["Auth vs autorisation", "OAuth2/JWT", "CORS/CSRF", "XSS/injection", "SSRF", "Secrets"]
+  },
+  {
+    "id": "angular-rxjs",
+    "theme": "Angular/RxJS",
+    "label": "Angular & RxJS",
+    "description": "Complément : composants Angular, formulaires, HttpClient et opérateurs RxJS.",
+    "subthemes": ["Composants", "Formulaires", "HttpClient", "Opérateurs RxJS"]
+  },
+  {
+    "id": "rag",
+    "theme": "RAG",
+    "label": "RAG & sécurité IA",
+    "description": "Ingestion, chunking, embeddings, retrieval, génération et garde-fous d'un système RAG.",
+    "subthemes": ["Ingestion", "Chunking", "Embeddings", "Retrieval", "Génération", "Garde-fous"]
+  },
+  {
+    "id": "entretien",
+    "theme": "Entretien comportemental",
+    "label": "Entretien comportemental",
+    "description": "Présentation, incidents, désaccords techniques, anglais technique et communication.",
+    "subthemes": ["Présentation", "Incidents", "Communication", "Anglais technique"]
+  }
+]

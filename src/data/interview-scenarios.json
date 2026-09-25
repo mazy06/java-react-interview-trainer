@@ -1,0 +1,151 @@
+[
+  {
+    "id": "SIM-01",
+    "title": "Présentation en deux minutes",
+    "category": "Entretien comportemental",
+    "prompt": "Présentez-vous en deux minutes : rôle actuel, deux réalisations utiles au poste visé, ce que vous recherchez.",
+    "expectedApproach": "Structurer en trois temps (rôle/domaine, réalisations concrètes avec stack pratiquée, recherche actuelle), personnaliser au poste visé, rester factuel et vérifiable.",
+    "followUpQuestions": [
+      "Qu'auriez-vous fait autrement sur ce projet ?",
+      "Quelle a été votre plus grande difficulté sur cette réalisation ?"
+    ],
+    "relatedQuestionIds": ["E01", "E02"],
+    "evaluationCriteria": ["communication", "connaissances"]
+  },
+  {
+    "id": "SIM-02",
+    "title": "Expliquer equals/hashCode",
+    "category": "Java",
+    "prompt": "Expliquez le contrat entre equals et hashCode, et pourquoi l'un sans l'autre casse une HashMap.",
+    "expectedApproach": "Définir le contrat (objets égaux => même hashCode, inverse non garanti), donner un exemple de collection cassée par une redéfinition partielle, mentionner les clés mutables.",
+    "followUpQuestions": [
+      "Que se passe-t-il si vous redéfinissez equals sans hashCode ?",
+      "Pourquoi une clé mutable est-elle dangereuse dans une HashMap ?"
+    ],
+    "relatedQuestionIds": ["J10", "J11"],
+    "evaluationCriteria": ["connaissances", "diagnostic"]
+  },
+  {
+    "id": "SIM-03",
+    "title": "Clé mutable dans une HashMap",
+    "category": "Java",
+    "prompt": "Un objet est inséré comme clé dans une HashMap, puis un champ utilisé par hashCode est modifié. Que se passe-t-il à la recherche ?",
+    "expectedApproach": "Expliquer le recalcul de bucket, la clé « perdue » bien que présente, et la solution (clé immuable, tester insertion/recherche/suppression).",
+    "followUpQuestions": ["Comment détecteriez-vous ce bug en test ?"],
+    "relatedQuestionIds": ["J11"],
+    "evaluationCriteria": ["diagnostic", "connaissances"]
+  },
+  {
+    "id": "SIM-04",
+    "title": "Optional.orElse vs orElseGet",
+    "category": "Java",
+    "prompt": "Quelle est la différence entre orElse(calcul()) et orElseGet(() -> calcul()) si calcul() a un effet de bord coûteux ?",
+    "expectedApproach": "Expliquer que orElse évalue systématiquement son argument, orElseGet seulement si nécessaire ; illustrer avec un exemple concret.",
+    "followUpQuestions": ["Que se passe-t-il si calcul() lève une exception ?"],
+    "relatedQuestionIds": ["J27"],
+    "evaluationCriteria": ["connaissances", "diagnostic"]
+  },
+  {
+    "id": "SIM-05",
+    "title": "volatile et atomicité",
+    "category": "Java",
+    "prompt": "volatile int count; count++; est-ce thread-safe ? Justifiez et proposez une correction.",
+    "expectedApproach": "Expliquer que volatile garantit visibilité/ordre, pas atomicité ; count++ est lecture+addition+écriture ; corriger avec AtomicInteger ou un verrou.",
+    "followUpQuestions": ["Que changeriez-vous si plusieurs variables formaient un invariant ?"],
+    "relatedQuestionIds": ["J38"],
+    "evaluationCriteria": ["connaissances", "diagnostic", "securite"]
+  },
+  {
+    "id": "SIM-06",
+    "title": "JPA LAZY et DTO",
+    "category": "JPA/Hibernate",
+    "prompt": "Un endpoint REST sérialise une entité avec une relation LAZY et plante avec LazyInitializationException. Proposez un correctif durable.",
+    "expectedApproach": "Définir les champs du DTO, charger le nécessaire dans le cas d'usage (JOIN FETCH/EntityGraph/projection), construire le DTO avant fermeture du contexte ; éviter EAGER par réflexe.",
+    "followUpQuestions": [
+      "Pourquoi ne pas simplement passer la relation en EAGER ?",
+      "Comment testeriez-vous ce correctif ?"
+    ],
+    "relatedQuestionIds": ["H13", "H14"],
+    "evaluationCriteria": ["diagnostic", "connaissances", "tests"]
+  },
+  {
+    "id": "SIM-07",
+    "title": "Diagnostiquer un N+1",
+    "category": "JPA/Hibernate",
+    "prompt": "Une page de liste devient lente en production après ajout d'une relation. Comment confirmez-vous et corrigez-vous un N+1 ?",
+    "expectedApproach": "Observer les logs SQL/statistiques sur un lot représentatif, confirmer le pattern N+1, corriger le plan de chargement (JOIN FETCH, EntityGraph, batch fetch), pas augmenter un timeout.",
+    "followUpQuestions": ["Comment éviteriez-vous ce problème en revue de code à l'avenir ?"],
+    "relatedQuestionIds": ["H16", "H17"],
+    "evaluationCriteria": ["diagnostic", "connaissances"]
+  },
+  {
+    "id": "SIM-08",
+    "title": "Pagination fiable",
+    "category": "SQL",
+    "prompt": "Une pagination avec LIMIT/OFFSET saute ou duplique des lignes sous écritures concurrentes. Proposez une solution plus stable.",
+    "expectedApproach": "Expliquer le problème d'un tri non déterministe, ajouter un critère de départage (ID), envisager une pagination par keyset pour un gros volume.",
+    "followUpQuestions": ["Quand garderiez-vous OFFSET malgré ses limites ?"],
+    "relatedQuestionIds": ["Q09", "Q10"],
+    "evaluationCriteria": ["diagnostic", "connaissances"]
+  },
+  {
+    "id": "SIM-09",
+    "title": "Course réseau dans React",
+    "category": "React",
+    "prompt": "Un champ de recherche affiche parfois un résultat périmé quand deux requêtes se croisent. Corrigez ce comportement.",
+    "expectedApproach": "Identifier la course entre deux réponses, associer la réponse à la requête active, ignorer/annuler les anciennes (AbortController), tester avec des réponses inversées.",
+    "followUpQuestions": ["Comment testeriez-vous ce correctif avec React Testing Library ?"],
+    "relatedQuestionIds": ["C19", "C10"],
+    "evaluationCriteria": ["diagnostic", "tests", "connaissances"]
+  },
+  {
+    "id": "SIM-10",
+    "title": "Stabilité des keys",
+    "category": "React",
+    "prompt": "Une liste triable perd le focus d'un champ de saisie après un tri. Diagnostiquez et corrigez.",
+    "expectedApproach": "Identifier une key instable (index) qui associe mal l'état après tri, remplacer par un identifiant métier stable.",
+    "followUpQuestions": ["Pourquoi Math.random() comme key serait pire encore ?"],
+    "relatedQuestionIds": ["C04", "C05"],
+    "evaluationCriteria": ["diagnostic", "connaissances"]
+  },
+  {
+    "id": "SIM-11",
+    "title": "Validation TypeScript",
+    "category": "TypeScript",
+    "prompt": "Un backend renvoie {id: \"42\"} alors que le type frontend annonce id: number. Comment détectez-vous et corrigez-vous ce problème ?",
+    "expectedApproach": "Expliquer que le compilateur ne voit pas le réseau, proposer un schéma de validation runtime (Zod) et un test de contrat.",
+    "followUpQuestions": ["Où placeriez-vous cette validation dans l'architecture frontend ?"],
+    "relatedQuestionIds": ["F18", "ADD-TS-02"],
+    "evaluationCriteria": ["diagnostic", "connaissances", "tests"]
+  },
+  {
+    "id": "SIM-12",
+    "title": "Pipeline Java/React",
+    "category": "Git/GitLab",
+    "prompt": "Décrivez un pipeline CI pour un monorepo Java/React : stages, jobs, artefacts, ce qui doit bloquer un merge.",
+    "expectedApproach": "Décrire verify (lint/tests), package, deploy ; artefacts identifiés et vérifiés ; définir clairement ce qui doit bloquer un merge (tests, sécurité) versus ce qui est informatif.",
+    "followUpQuestions": ["Comment géreriez-vous les secrets de déploiement dans ce pipeline ?"],
+    "relatedQuestionIds": ["G07", "G14"],
+    "evaluationCriteria": ["connaissances", "securite"]
+  },
+  {
+    "id": "SIM-13",
+    "title": "Incident de production",
+    "category": "Entretien comportemental",
+    "prompt": "Une livraison a cassé une fonctionnalité en production. Racontez comment vous géreriez cet incident avec la méthode STAR.",
+    "expectedApproach": "Situation/Tâche/Action/Résultat, ajouter la prévention mise en place, mentionner la communication et les limites de son propre rôle.",
+    "followUpQuestions": ["Quel test auriez-vous pu écrire avant pour éviter cet incident ?"],
+    "relatedQuestionIds": ["E07"],
+    "evaluationCriteria": ["communication", "diagnostic", "tests"]
+  },
+  {
+    "id": "SIM-14",
+    "title": "Trade-off technique",
+    "category": "Architecture",
+    "prompt": "Expliquez un compromis technique que vous avez dû faire, avec son coût et sa justification.",
+    "expectedApproach": "Nommer clairement l'alternative écartée, le critère de décision (délai, fiabilité, coût), et le résultat mesuré ou observé.",
+    "followUpQuestions": ["Referiez-vous le même choix aujourd'hui ?"],
+    "relatedQuestionIds": ["E08"],
+    "evaluationCriteria": ["communication", "raisonnement"]
+  }
+]
