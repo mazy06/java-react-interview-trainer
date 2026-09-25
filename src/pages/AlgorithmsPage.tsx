@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { KatasBigOTab } from '../components/Algorithms/KatasBigOTab'
 import { DesignPatternsTab } from '../components/Algorithms/DesignPatternsTab'
+import { ArchitectureStylesTab } from '../components/Algorithms/ArchitectureStylesTab'
 
-type Tab = 'katas' | 'patterns'
+type Tab = 'katas' | 'patterns' | 'architecture'
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'katas', label: 'Katas Big O' },
   { key: 'patterns', label: 'Design Patterns' },
+  { key: 'architecture', label: 'Architecture' },
 ]
 
 function tabButtonClass(active: boolean) {
@@ -25,7 +27,9 @@ export function AlgorithmsPage() {
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
           Préparation entretien technique
         </p>
-        <h1 className="text-2xl font-semibold text-slate-900">Algorithmes &amp; Design Patterns</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">
+          Algorithmes, Design Patterns &amp; Architecture
+        </h1>
       </header>
 
       <div className="flex gap-2 border-b border-slate-200" role="tablist" aria-label="Sections">
@@ -43,7 +47,9 @@ export function AlgorithmsPage() {
         ))}
       </div>
 
-      {activeTab === 'katas' ? <KatasBigOTab /> : <DesignPatternsTab />}
+      {activeTab === 'katas' && <KatasBigOTab />}
+      {activeTab === 'patterns' && <DesignPatternsTab />}
+      {activeTab === 'architecture' && <ArchitectureStylesTab />}
     </div>
   )
 }
