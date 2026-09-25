@@ -13,6 +13,8 @@ export interface AlgoApproach {
   space: string
   tier: 1 | 2 | 3 | 4
   caution?: boolean
+  code: string
+  explanation: string
 }
 
 export interface AlgoKata {
@@ -20,10 +22,8 @@ export interface AlgoKata {
   category: AlgoCategory
   title: string
   problem: string
-  approaches: AlgoApproach[]
   lang: 'java' | 'javascript'
-  code: string
-  explanation: string
+  approaches: AlgoApproach[]
   verdict: string
 }
 

@@ -165,7 +165,7 @@ export function AlgorithmsPage() {
           </nav>
 
           <div className="overflow-y-auto md:h-full">
-            <AlgoViewer kata={selected} index={ALGORITHM_KATAS.indexOf(selected)} />
+            <AlgoViewer key={selected.id} kata={selected} index={ALGORITHM_KATAS.indexOf(selected)} />
           </div>
         </div>
       )}
