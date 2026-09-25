@@ -10490,5 +10490,1671 @@
     "reviewIntervals": [1, 3, 7, 14],
     "isOriginalPdfContent": false,
     "proofType": "diagnosis"
+  },
+  {
+    "id": "K03",
+    "source": "pdf",
+    "sourcePage": 59,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "CMD et ENTRYPOINT",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre CMD et ENTRYPOINT dans un Dockerfile ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "ENTRYPOINT décrit l'exécutable principal ; CMD fournit une commande ou des arguments par défaut ; tous deux peuvent être surchargés selon les options au lancement"
+      },
+      {
+        "id": "b",
+        "text": "ENTRYPOINT est toujours exécuté intégralement, quelles que soient les options passées au lancement"
+      },
+      {
+        "id": "c",
+        "text": "La forme shell et la forme exec JSON se comportent exactement de la même façon face aux signaux"
+      },
+      {
+        "id": "d",
+        "text": "CMD ne peut jamais être surchargé au lancement du conteneur"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "ENTRYPOINT décrit l'exécutable principal du conteneur ; CMD fournit une commande complète ou des arguments par défaut, surchargeables au lancement. Les deux peuvent être surchargés selon les options utilisées. La forme exec (JSON) évite un shell intermédiaire ; la forme shell traite différemment les variables et les signaux. Affirmer qu'ENTRYPOINT est « toujours exécuté » est trop absolu.",
+    "commonTrap": "Croire qu'ENTRYPOINT ne peut jamais être modifié, alors que --entrypoint au lancement le permet explicitement.",
+    "keyConcept": "cmd-vs-entrypoint",
+    "tags": ["Docker", "Dockerfile"],
+    "relatedQuestionIds": ["K02"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "ENTRYPOINT décrit l'exécutable principal ; CMD fournit une commande ou des arguments par défaut ; les deux peuvent être surchargés selon les options.",
+    "proofType": "definition"
+  },
+  {
+    "id": "K04",
+    "source": "pdf",
+    "sourcePage": 59,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Signaux et arrêt gracieux",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Pourquoi le processus PID 1 d'un conteneur doit-il traiter correctement les signaux, et quel piège classique en Java faut-il éviter ?",
+    "code": null,
+    "expectedPoints": [
+      "Le processus principal (PID 1) doit recevoir et traiter les signaux comme SIGTERM.",
+      "Un shell mal configuré comme point d'entrée peut intercepter ou ignorer ces signaux.",
+      "En Java, utiliser une forme exec (pas une forme shell) pour que le JVM reçoive directement SIGTERM.",
+      "Respecter un délai avant arrêt forcé (SIGKILL) pour permettre une fermeture propre."
+    ],
+    "modelAnswer": "Le processus PID 1 d'un conteneur a des responsabilités particulières : il doit recevoir et traiter les signaux (SIGTERM notamment) pour permettre un arrêt gracieux. Si l'entrée du conteneur est un shell mal configuré (forme shell plutôt qu'exec), ce shell peut intercepter ou ignorer les signaux sans les transmettre au processus applicatif réel. En Java, utiliser ENTRYPOINT sous forme exec JSON (`[\"java\", \"-jar\", \"app.jar\"]`) permet à la JVM de recevoir directement SIGTERM et de fermer proprement ses ressources, dans le délai accordé avant que Docker n'envoie SIGKILL. Le conteneur s'arrête quand son processus principal se termine.",
+    "commonTrap": "Utiliser une forme shell (`CMD java -jar app.jar`) qui insère un shell intermédiaire, empêchant l'application de recevoir directement les signaux d'arrêt.",
+    "keyConcept": "pid1-graceful-shutdown",
+    "tags": ["Docker", "signaux", "Java"],
+    "relatedQuestionIds": ["K03"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Le processus principal doit recevoir et traiter les signaux ; un shell mal configuré peut les intercepter ; utiliser une entrée exec en Java pour transmettre SIGTERM.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "K05",
+    "source": "pdf",
+    "sourcePage": 59,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "EXPOSE",
+    "difficulty": "junior",
+    "type": "mcq",
+    "question": "L'instruction EXPOSE publie-t-elle réellement un port vers l'hôte ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Non, EXPOSE documente un port ; la publication vers l'hôte se configure séparément (option -p ou ports en Compose)"
+      },
+      {
+        "id": "b",
+        "text": "EXPOSE publie automatiquement le port sur l'hôte dès le build de l'image"
+      },
+      {
+        "id": "c",
+        "text": "localhost dans un conteneur désigne automatiquement la machine hôte"
+      },
+      {
+        "id": "d",
+        "text": "Entre deux services Compose, il faut toujours utiliser le port publié sur l'hôte pour communiquer"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "EXPOSE documente un port utilisé par l'image, à titre informatif ; la publication effective vers l'hôte se configure séparément (option -p au lancement, ou ports: en Compose). Entre services Compose, on utilise le nom de service et le port interne, pas le port publié sur l'hôte. localhost à l'intérieur d'un conteneur désigne ce conteneur lui-même, jamais automatiquement une base voisine ni la machine hôte.",
+    "commonTrap": "Utiliser localhost pour joindre un autre conteneur ou la base de données, en pensant que ce mot-clé traverse automatiquement le réseau Docker.",
+    "keyConcept": "expose-vs-publish",
+    "tags": ["Docker", "réseau"],
+    "relatedQuestionIds": ["K06"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "EXPOSE documente un port ; la publication vers l'hôte se configure séparément ; localhost dans un conteneur désigne ce conteneur, pas la machine hôte.",
+    "proofType": "counterexample"
+  },
+  {
+    "id": "K06",
+    "source": "pdf",
+    "sourcePage": 59,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Volume, bind mount, réseau",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre un volume Docker et un bind mount ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Un volume est géré par Docker ; un bind mount vise un chemin précis de l'hôte ; les deux peuvent persister hors du cycle de vie du conteneur, avec droits et sauvegarde à définir"
+      },
+      {
+        "id": "b",
+        "text": "Une donnée stockée uniquement dans la couche inscriptible du conteneur survit à sa recréation"
+      },
+      {
+        "id": "c",
+        "text": "Un bind mount est géré automatiquement par Docker comme un volume nommé"
+      },
+      {
+        "id": "d",
+        "text": "Les réseaux Docker n'ont aucun effet sur la résolution de noms entre conteneurs"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Un volume est un espace de stockage géré par Docker (nommé, avec son propre cycle de vie). Un bind mount monte un chemin précis du système de fichiers hôte dans le conteneur. Les deux permettent de persister des données au-delà de la vie du conteneur, avec des questions de droits et de stratégie de sauvegarde à traiter explicitement. Une donnée stockée uniquement dans la couche inscriptible du conteneur (sans volume ni bind mount) disparaît à sa recréation. Les réseaux Docker contrôlent la visibilité et la résolution de noms entre conteneurs.",
+    "commonTrap": "Stocker des données importantes uniquement dans le système de fichiers du conteneur, sans volume ni bind mount, et les perdre à la première recréation.",
+    "keyConcept": "volume-vs-bind-mount",
+    "tags": ["Docker", "volumes", "réseau"],
+    "relatedQuestionIds": ["K05"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Un volume est géré par Docker, un bind mount vise un chemin hôte ; les deux persistent hors cycle du conteneur ; une donnée en couche inscriptible seule disparaît à la recréation.",
+    "proofType": "definition"
+  },
+  {
+    "id": "K08",
+    "source": "pdf",
+    "sourcePage": 60,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Cache de couches et .dockerignore",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Pourquoi copier les fichiers de dépendances avant le code source dans un Dockerfile accélère-t-il les rebuilds, et à quoi sert .dockerignore ?",
+    "code": null,
+    "expectedPoints": [
+      "Docker met en cache chaque couche ; une couche n'est reconstruite que si son contenu ou une couche précédente a changé.",
+      "Copier pom.xml/package.json avant le code source permet de réutiliser le cache d'installation des dépendances si seul le code change.",
+      ".dockerignore exclut .git, les builds locaux, node_modules et les secrets inutiles du contexte de build.",
+      "Un contexte de build énorme ralentit le transfert même si peu de fichiers sont finalement copiés dans l'image."
+    ],
+    "modelAnswer": "Docker met en cache chaque couche du Dockerfile : une couche n'est reconstruite que si son contenu propre change, ou si une couche précédente a changé. En copiant d'abord les fichiers de dépendances (pom.xml, package.json) et en installant les dépendances, puis en copiant le code source ensuite, un changement de code seul ne recrée pas l'étape d'installation des dépendances, qui reste coûteuse. .dockerignore exclut du contexte de build des fichiers inutiles ou sensibles (.git, node_modules, builds locaux, secrets), ce qui accélère le transfert du contexte vers le démon Docker, même si ces fichiers n'auraient de toute façon pas été copiés dans l'image finale.",
+    "commonTrap": "Copier tout le code source avant d'installer les dépendances, invalidant le cache d'installation à chaque modification de code, même mineure.",
+    "keyConcept": "docker-layer-cache-order",
+    "tags": ["Docker", "build", "performance"],
+    "relatedQuestionIds": ["K07"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Copier les fichiers de dépendances avant les sources réutilise les étapes stables ; .dockerignore exclut .git/node_modules/secrets ; un contexte énorme ralentit le transfert.",
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "K09",
+    "source": "pdf",
+    "sourcePage": 60,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Pinning de version",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Pourquoi épingler une image de base par digest ou version précise plutôt que d'utiliser un tag mouvant comme latest ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Un tag peut pointer vers un contenu différent demain ; un digest identifie un contenu précis et immuable ; « latest » ne signifie ni testé ni sécurisé"
+      },
+      {
+        "id": "b",
+        "text": "latest garantit toujours la version la plus stable et la plus testée d'une image"
+      },
+      {
+        "id": "c",
+        "text": "Un digest change automatiquement à chaque nouvelle publication de l'image"
+      },
+      {
+        "id": "d",
+        "text": "Épingler une version empêche définitivement toute mise à jour de l'image"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Un tag comme latest est mouvant : il peut pointer vers un contenu différent d'un jour à l'autre selon les publications de l'éditeur de l'image. Un digest (hash du contenu) identifie une image précise et immuable. « latest » ne garantit ni qu'elle a été testée dans ce contexte, ni qu'elle est sécurisée. Mettre à jour reste possible et recommandé, mais via une procédure contrôlée (changement explicite de version/digest), pas par une dérive silencieuse.",
+    "commonTrap": "Utiliser latest en pensant obtenir automatiquement la version la plus stable, alors que cela introduit une dérive non maîtrisée entre deux builds.",
+    "keyConcept": "image-pinning",
+    "tags": ["Docker", "sécurité", "build"],
+    "relatedQuestionIds": ["K16"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Un tag peut changer de contenu ; un digest identifie un contenu précis ; latest ne signifie ni testé ni sécurisé ; mettre à jour via une procédure contrôlée.",
+    "proofType": "security"
+  },
+  {
+    "id": "K11",
+    "source": "pdf",
+    "sourcePage": 60,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Choix de l'image de base",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Une image Alpine est-elle systématiquement le meilleur choix pour réduire la taille d'une image ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Pas forcément : libc (musl), bibliothèques natives, certificats et outils de diagnostic peuvent différer ; une base minimale mais adaptée et supportée peut être un meilleur compromis"
+      },
+      {
+        "id": "b",
+        "text": "Alpine est toujours strictement compatible avec toutes les bibliothèques natives glibc"
+      },
+      {
+        "id": "c",
+        "text": "La taille d'une image garantit à elle seule sa fiabilité opérationnelle"
+      },
+      {
+        "id": "d",
+        "text": "Le choix de la distribution de base n'a jamais d'impact sur le diagnostic en production"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Alpine utilise musl libc au lieu de glibc, ce qui peut casser certaines bibliothèques natives compilées pour glibc, notamment avec certains agents JVM. Les certificats et outils de diagnostic présents diffèrent aussi. Une base minimale adaptée à l'écosystème utilisé (par exemple une image JRE officielle basée sur Debian slim) et bien supportée peut être un meilleur compromis que la taille seule.",
+    "commonTrap": "Choisir systématiquement Alpine pour « gagner de la taille » sans vérifier la compatibilité des bibliothèques natives utilisées par l'application.",
+    "keyConcept": "alpine-not-always-best",
+    "tags": ["Docker", "images"],
+    "relatedQuestionIds": ["K09"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Alpine n'est pas forcément meilleur : libc, bibliothèques natives, certificats et diagnostic peuvent différer ; une base minimale adaptée et supportée peut être un meilleur compromis.",
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "K12",
+    "source": "pdf",
+    "sourcePage": 60,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "JVM en conteneur limité",
+    "difficulty": "advanced",
+    "type": "open",
+    "question": "Pourquoi fixer -Xmx à la limite mémoire exacte du conteneur peut-il provoquer un kill du conteneur (OOMKilled), et comment dimensionner correctement ?",
+    "code": null,
+    "expectedPoints": [
+      "La JVM consomme de la mémoire au-delà du heap : metaspace, piles de threads, buffers natifs.",
+      "Fixer Xmx à toute la limite mémoire du conteneur ne laisse pas de marge pour ces besoins hors-heap.",
+      "Le conteneur peut être tué par l'orchestrateur (OOMKilled) si la mémoire totale dépasse la limite définie.",
+      "Observer mémoire conteneur et métriques JVM ensemble ; la limite CPU et le profil de charge influencent aussi pools et temps de réponse."
+    ],
+    "modelAnswer": "Une JVM consomme de la mémoire au-delà du tas Java (heap) : metaspace pour les classes chargées, piles pour chaque thread, buffers natifs pour les I/O, code JIT compilé. Si -Xmx est fixé à la totalité de la mémoire allouée au conteneur, ces besoins hors-heap font dépasser la limite totale, et l'orchestrateur (Docker, Kubernetes) tue le conteneur (OOMKilled) sans que la JVM ait eu la chance de lever une OutOfMemoryError propre. Il faut réserver une marge explicite pour le hors-heap, observer la mémoire du conteneur ET les métriques internes de la JVM ensemble, et tenir compte du fait que la limite CPU du conteneur influence aussi le dimensionnement des pools de threads et les temps de réponse.",
+    "commonTrap": "Fixer -Xmx à la limite mémoire exacte du conteneur (ou pire, ne pas le fixer du tout et laisser la JVM déduire une valeur trop optimiste), sans réserver de marge pour le hors-heap.",
+    "keyConcept": "jvm-container-memory-sizing",
+    "tags": ["Docker", "JVM", "performance"],
+    "relatedQuestionIds": ["J50"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Réserver de la mémoire pour heap, metaspace, stacks et buffers natifs ; Xmx égal à toute la limite peut provoquer un kill ; observer mémoire conteneur et métriques JVM ensemble.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "K14",
+    "source": "pdf",
+    "sourcePage": 61,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Diagnostic réseau",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Un conteneur est « running » mais son API reste inaccessible depuis l'extérieur. Quelle méthode de diagnostic suivre ?",
+    "code": null,
+    "expectedPoints": [
+      "Vérifier l'adresse d'écoute de l'application (0.0.0.0 versus 127.0.0.1/loopback).",
+      "Vérifier le port interne, sa publication vers l'hôte et le réseau utilisé.",
+      "« Running » prouve l'existence du processus, pas la santé métier de l'application.",
+      "Tester depuis chaque frontière (dans le conteneur, entre conteneurs, depuis l'hôte) pour localiser précisément la rupture."
+    ],
+    "modelAnswer": "Un statut « running » prouve seulement que le processus principal existe, pas que l'application écoute correctement ni qu'elle est fonctionnellement saine. Il faut vérifier l'adresse d'écoute de l'application : si elle écoute sur 127.0.0.1 (loopback) au lieu de 0.0.0.0, elle n'est accessible que depuis l'intérieur du conteneur lui-même, jamais depuis l'extérieur même avec un port publié. Vérifier ensuite le port interne réellement utilisé, sa publication effective vers l'hôte, et le réseau Docker concerné. Tester méthodiquement depuis chaque frontière (à l'intérieur du conteneur, entre conteneurs, depuis l'hôte) permet de localiser précisément où la chaîne se rompt.",
+    "commonTrap": "Confondre le statut « running » d'un conteneur avec la disponibilité réelle du service qu'il héberge, sans vérifier l'adresse d'écoute effective de l'application.",
+    "keyConcept": "container-running-not-reachable",
+    "tags": ["Docker", "réseau", "diagnostic"],
+    "relatedQuestionIds": ["K05", "K13"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Vérifier adresse d'écoute (0.0.0.0 vs loopback), port interne/publication, réseau et health ; running prouve l'existence du processus, pas la santé métier.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "K15",
+    "source": "pdf",
+    "sourcePage": 61,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Diagnostic connexion base de données",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Une application conteneurisée ne trouve pas sa base PostgreSQL dans docker-compose. Quels points vérifier dans l'ordre ?",
+    "code": null,
+    "expectedPoints": [
+      "Vérifier le nom DNS du service (résolution par nom de service Compose, pas localhost).",
+      "Vérifier le port interne utilisé (le port publié sur l'hôte n'est pas pertinent entre conteneurs).",
+      "Vérifier credentials, existence de la base, TLS et readiness du service base.",
+      "Rechercher ensuite les erreurs de pool de connexions et de migration au démarrage."
+    ],
+    "modelAnswer": "Il faut d'abord vérifier que l'application utilise le nom DNS du service Compose (par exemple db) plutôt que localhost ou 127.0.0.1, qui désigneraient le conteneur applicatif lui-même. Ensuite vérifier le port interne (5432), qui n'est pas le port éventuellement publié sur l'hôte : un service db:5432 dans le réseau Compose n'utilise pas ce port publié. Vérifier ensuite les credentials, l'existence effective de la base, la configuration TLS si activée, et la readiness du service base (démarré mais pas encore prêt à accepter des connexions). Une fois la connexion réseau confirmée, rechercher les erreurs de pool de connexions ou de migration au démarrage comme causes suivantes possibles.",
+    "commonTrap": "Utiliser localhost ou le port publié sur l'hôte pour joindre la base depuis un autre conteneur du même réseau Compose, au lieu du nom de service et du port interne.",
+    "keyConcept": "compose-service-dns-resolution",
+    "tags": ["Docker", "réseau", "diagnostic"],
+    "relatedQuestionIds": ["K06", "K14"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Vérifier DNS de service, port interne, credentials, base créée, TLS et readiness ; un service db:5432 n'utilise pas le port publié sur l'hôte ; rechercher ensuite erreurs de pool et migration.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "K16",
+    "source": "pdf",
+    "sourcePage": 61,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Historique des couches",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Supprimer un fichier dans une couche suivante d'un Dockerfile suffit-il à réduire la taille de l'image ?",
+    "code": "RUN curl -o secret.zip https://example.com/secret.zip\nRUN unzip secret.zip && rm secret.zip # secret.zip reste dans l'historique des couches !",
+    "options": [
+      {
+        "id": "a",
+        "text": "Non : un fichier ajouté dans une couche reste présent dans l'historique des couches même s'il est supprimé dans une couche suivante ; il faut créer et nettoyer dans la même étape, ou utiliser un multi-stage build"
+      },
+      {
+        "id": "b",
+        "text": "Toute suppression dans une couche ultérieure efface définitivement le fichier de l'image, y compris de son historique"
+      },
+      {
+        "id": "c",
+        "text": "La taille de l'image ne dépend jamais du nombre de couches ni de leur contenu historique"
+      },
+      {
+        "id": "d",
+        "text": "Un secret copié puis supprimé dans une couche différente est automatiquement effacé de l'image"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Chaque instruction RUN/COPY/ADD crée une nouvelle couche immuable. Supprimer un fichier dans une couche suivante ne l'efface pas des couches précédentes : il reste présent dans l'historique de l'image et peut être extrait en inspectant les couches. Pour réellement l'éviter, il faut créer et nettoyer le fichier dans la même instruction RUN (même couche), ou utiliser un multi-stage build qui ne copie dans l'image finale que ce qui est explicitement nécessaire.",
+    "commonTrap": "Copier un secret ou un fichier volumineux puis le supprimer dans une instruction RUN séparée, en pensant l'avoir réellement effacé de l'image finale.",
+    "keyConcept": "docker-layer-history-persistence",
+    "tags": ["Docker", "sécurité", "build", "piège"],
+    "relatedQuestionIds": ["K02", "K09"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Un fichier ajouté dans une couche peut rester dans l'historique même si supprimé ensuite ; créer/nettoyer dans la même étape ou utiliser multi-stage ; ne jamais copier un secret puis le supprimer en pensant l'avoir effacé.",
+    "proofType": "security"
+  },
+  {
+    "id": "K17",
+    "source": "pdf",
+    "sourcePage": 61,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Perte de données après recréation",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Après avoir recréé un conteneur de base de données, les données ont disparu. Que vérifier, et un volume remplace-t-il une sauvegarde ?",
+    "code": null,
+    "expectedPoints": [
+      "Vérifier qu'un volume est réellement monté au bon chemin de stockage attendu par le moteur de base.",
+      "Vérifier le nom du volume utilisé (un nom différent crée un volume vide distinct) et les permissions.",
+      "Un volume est un mécanisme de persistance, pas une sauvegarde en soi.",
+      "Définir et tester une stratégie de sauvegarde/restauration avant toute opération de nettoyage."
+    ],
+    "modelAnswer": "Il faut vérifier qu'un volume est réellement monté au chemin exact où le moteur de base stocke ses données (par exemple /var/lib/postgresql/data pour PostgreSQL) : un montage au mauvais chemin laisse les données dans la couche inscriptible éphémère du conteneur. Vérifier aussi le nom du volume utilisé : un nom différent d'une exécution à l'autre crée un nouveau volume vide plutôt que de réutiliser l'existant, ainsi que les permissions d'accès. Un volume est un mécanisme de persistance entre recréations du conteneur, mais ce n'est pas une sauvegarde : il peut être supprimé par erreur (docker volume rm, docker system prune avec les bonnes options) ou corrompu. Une stratégie de sauvegarde et de restauration testée reste nécessaire indépendamment du volume.",
+    "commonTrap": "Confondre la persistance offerte par un volume avec une garantie de sauvegarde, et découvrir l'absence de sauvegarde réelle seulement après un incident.",
+    "keyConcept": "volume-not-a-backup",
+    "tags": ["Docker", "volumes", "piège"],
+    "relatedQuestionIds": ["K06"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Vérifier volume réellement monté et chemin de stockage, nom de volume, permissions et base ciblée ; un volume est une persistance, pas une sauvegarde.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "K18",
+    "source": "pdf",
+    "sourcePage": 61,
+    "chapter": "Docker",
+    "theme": "Docker",
+    "subtheme": "Outils de diagnostic",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quels outils Docker utiliser pour diagnostiquer un conteneur en difficulté, et quel réflexe éviter ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "docker logs, docker inspect, docker stats, docker ps -a et docker exec (si l'image le permet) pour recueillir la cause ; ne jamais lancer un nettoyage destructeur (prune) comme premier réflexe de réparation"
+      },
+      {
+        "id": "b",
+        "text": "docker system prune est le premier réflexe recommandé face à un conteneur en échec"
+      },
+      {
+        "id": "c",
+        "text": "docker exec fonctionne toujours, quelle que soit l'image et son état"
+      },
+      {
+        "id": "d",
+        "text": "docker stats ne fournit aucune information utile au diagnostic"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "docker logs affiche la sortie du processus principal ; docker inspect détaille la configuration et l'état ; docker stats montre l'usage de ressources en temps réel ; docker ps -a liste aussi les conteneurs arrêtés. docker exec permet d'explorer un conteneur en cours d'exécution, si l'image contient un shell. Il faut recueillir la cause avant toute action destructive : un nettoyage (prune) supprime des ressources potentiellement utiles sans résoudre le problème sous-jacent.",
+    "commonTrap": "Lancer un docker system prune en premier réflexe face à un conteneur en échec, en espérant que « nettoyer » résout le problème sans en avoir diagnostiqué la cause.",
+    "keyConcept": "docker-diagnostic-tools",
+    "tags": ["Docker", "diagnostic"],
+    "relatedQuestionIds": ["K13"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "docker logs/inspect/stats/ps -a ; docker exec pour un processus vivant si l'image l'autorise ; recueillir la cause avant de redémarrer ; piège : « lancez prune pour réparer ».",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "TRAP-DOCKER-01",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Docker",
+    "subtheme": "depends_on et readiness",
+    "difficulty": "confirmed",
+    "type": "code",
+    "question": "Pourquoi l'application peut-elle échouer à se connecter à la base même avec depends_on configuré dans docker-compose ?",
+    "code": "services:\n  api:\n    depends_on: [db]  # attend seulement que le conteneur db démarre, pas qu'il soit prêt\n  db:\n    image: postgres:16",
+    "expectedAnswer": "Par défaut, depends_on attend seulement que le conteneur db soit démarré (running), pas que PostgreSQL soit réellement prêt à accepter des connexions. Il faut ajouter une condition de santé (depends_on avec condition: service_healthy et un healthcheck sur db), ou gérer un retry côté application au démarrage.",
+    "acceptedConcepts": ["depends_on", "healthcheck", "service_healthy", "readiness vs démarrage"],
+    "explanation": "depends_on sans condition attend uniquement que le conteneur cible ait démarré, ce qui ne garantit pas que le service qu'il héberge (PostgreSQL) soit prêt à accepter des connexions : l'initialisation de la base peut prendre plusieurs secondes après le démarrage du conteneur. La solution est de définir un healthcheck sur le service db et d'utiliser depends_on avec condition: service_healthy, ou de rendre l'application elle-même résiliente avec un retry de connexion au démarrage.",
+    "commonTrap": "Croire que depends_on garantit qu'un service dépendant est fonctionnellement prêt, alors qu'il ne vérifie que le démarrage du conteneur.",
+    "keyConcept": "compose-depends-on-not-readiness",
+    "tags": ["Docker", "Compose", "piège"],
+    "relatedQuestionIds": ["K15"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "counterexample"
+  },
+  {
+    "id": "TRAP-DOCKER-02",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Docker",
+    "subtheme": "Build non reproductible",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Pourquoi préférer `npm ci` à `npm install` dans un Dockerfile de build ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "npm ci installe exactement les versions verrouillées dans package-lock.json et échoue si ce fichier est incohérent, garantissant un build reproductible ; npm install peut modifier le lockfile et résoudre des versions légèrement différentes"
+      },
+      {
+        "id": "b",
+        "text": "npm install et npm ci produisent toujours un résultat strictement identique"
+      },
+      {
+        "id": "c",
+        "text": "npm ci est plus lent que npm install dans tous les cas"
+      },
+      {
+        "id": "d",
+        "text": "npm ci ignore totalement le fichier package-lock.json"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "npm ci installe strictement les versions figées dans package-lock.json et échoue si ce fichier est absent ou incohérent avec package.json, garantissant un build reproductible d'une machine à l'autre. npm install peut, dans certains cas, mettre à jour le lockfile et résoudre des versions légèrement différentes de dépendances transitives, ce qui peut introduire une dérive silencieuse entre deux builds d'une même image.",
+    "commonTrap": "Utiliser npm install dans un Dockerfile de build en pensant obtenir exactement les mêmes dépendances qu'en local, sans garantie de reproductibilité stricte.",
+    "keyConcept": "npm-ci-reproducible-build",
+    "tags": ["Docker", "build", "npm"],
+    "relatedQuestionIds": ["K08"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "TRAP-DOCKER-03",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Docker",
+    "subtheme": "Healthcheck et restart policy",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Quelle est la différence entre un conteneur qui redémarre en boucle à cause d'un restart policy et un conteneur marqué unhealthy par un HEALTHCHECK ?",
+    "code": null,
+    "expectedPoints": [
+      "La restart policy (par exemple always, on-failure) redémarre le conteneur quand son processus principal se termine.",
+      "HEALTHCHECK vérifie périodiquement un état applicatif interne sans redémarrer automatiquement le conteneur par défaut.",
+      "Un conteneur unhealthy peut continuer de tourner tout en étant signalé comme défaillant, ce qui permet à un orchestrateur de réagir (retirer du load balancer, par exemple).",
+      "Combiner les deux : redémarrer sur crash réel, mais retirer du trafic un conteneur qui répond mais ne fonctionne pas correctement."
+    ],
+    "modelAnswer": "La restart policy Docker (always, on-failure, unless-stopped) redémarre le conteneur quand son processus principal se termine (crash, sortie normale selon la politique). HEALTHCHECK définit une commande exécutée périodiquement à l'intérieur du conteneur pour vérifier un état applicatif (par exemple répondre sur un endpoint /health) ; un conteneur marqué unhealthy continue généralement de tourner tel quel avec Docker seul, mais ce statut permet à un orchestrateur externe (Kubernetes, un load balancer) de le retirer du trafic sans forcément le redémarrer. Ces deux mécanismes se complètent : la restart policy gère les crashs francs, HEALTHCHECK détecte un service qui répond mais ne fonctionne pas correctement (bloqué, dépendance indisponible).",
+    "commonTrap": "Croire qu'un conteneur marqué unhealthy est automatiquement redémarré par Docker, comme le ferait une restart policy sur un crash réel.",
+    "keyConcept": "healthcheck-vs-restart-policy",
+    "tags": ["Docker", "Compose", "exploitation"],
+    "relatedQuestionIds": ["TRAP-DOCKER-01"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "TRAP-DOCKER-04",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Docker",
+    "subtheme": "Variables d'environnement au build vs au runtime",
+    "difficulty": "advanced",
+    "type": "code",
+    "question": "Pourquoi une image React construite avec une variable d'environnement au build (`ENV VITE_API_URL=...`) ne peut-elle pas être reconfigurée simplement en changeant une variable au lancement du conteneur ?",
+    "code": "# Dockerfile\nARG VITE_API_URL\nENV VITE_API_URL=$VITE_API_URL\nRUN npm run build  # la variable est \"figée\" dans les fichiers JS statiques générés",
+    "expectedAnswer": "Vite (comme la plupart des bundlers) injecte les variables d'environnement dans le JavaScript statique au moment du build, pas à l'exécution. Une fois les fichiers JS générés, ils sont figés : changer une variable d'environnement au lancement du conteneur (docker run -e ...) n'a aucun effet, car il n'y a plus de processus Node qui lit cette variable, seulement des fichiers statiques déjà servis.",
+    "acceptedConcepts": [
+      "variables au build vs au runtime",
+      "bundler statique",
+      "fichiers JS figés",
+      "configuration runtime pour une SPA"
+    ],
+    "explanation": "Pour une application frontend construite en fichiers statiques (comme avec Vite), les variables d'environnement préfixées (VITE_*) sont substituées dans le code au moment du build : le résultat est un ensemble de fichiers JS/CSS statiques sans processus vivant qui pourrait relire une variable d'environnement au démarrage. Promouvoir la même image entre environnements (dev/staging/prod) avec une configuration différente nécessite soit de rebuilder pour chaque environnement, soit un mécanisme de configuration runtime dédié (fichier de config chargé dynamiquement, endpoint de configuration servi par le backend).",
+    "commonTrap": "Vouloir réutiliser la même image Docker construite avec Vite entre plusieurs environnements en changeant simplement une variable d'environnement au lancement, sans réaliser que le build a déjà figé la configuration dans les fichiers statiques.",
+    "keyConcept": "build-time-vs-runtime-env-spa",
+    "tags": ["Docker", "React", "build", "piège"],
+    "relatedQuestionIds": ["C42"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "counterexample"
+  },
+  {
+    "id": "G02",
+    "source": "pdf",
+    "sourcePage": 56,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "fetch et pull",
+    "difficulty": "junior",
+    "type": "mcq",
+    "question": "Quelle différence existe entre git fetch et git pull ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "fetch récupère les références distantes sans les intégrer dans la branche courante ; pull fait fetch puis intègre selon la stratégie configurée (merge ou rebase)"
+      },
+      {
+        "id": "b",
+        "text": "push publie les fichiers non committés du répertoire de travail"
+      },
+      {
+        "id": "c",
+        "text": "fetch modifie automatiquement les fichiers du répertoire de travail"
+      },
+      {
+        "id": "d",
+        "text": "pull ne récupère jamais de nouveaux commits, seulement des métadonnées"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "fetch récupère les références et objets distants sans toucher à la branche courante : il faut examiner l'historique et l'état local avant d'intégrer. pull réalise un fetch puis une intégration automatique (merge ou rebase, selon la configuration). push publie les commits déjà réalisés localement, jamais les fichiers non committés du répertoire de travail.",
+    "commonTrap": "Confondre push avec une sauvegarde générale de tout le répertoire de travail, alors qu'il ne publie que les commits existants.",
+    "keyConcept": "git-fetch-vs-pull",
+    "tags": ["Git"],
+    "relatedQuestionIds": ["G01", "G03"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "fetch récupère les références distantes sans intégrer ; pull fait fetch puis intègre selon la stratégie configurée ; push publie les commits, pas les fichiers non committés.",
+    "proofType": "definition"
+  },
+  {
+    "id": "G04",
+    "source": "pdf",
+    "sourcePage": 56,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "reset, revert, restore",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre git reset, git revert et git restore ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "revert ajoute un commit inverse (sûr sur un historique partagé) ; reset déplace une référence et peut modifier index/working tree selon le mode ; restore restaure des fichiers depuis une source donnée"
+      },
+      {
+        "id": "b",
+        "text": "reset et revert produisent toujours un historique final strictement identique"
+      },
+      {
+        "id": "c",
+        "text": "revert réécrit l'historique existant comme le ferait un reset --hard"
+      },
+      {
+        "id": "d",
+        "text": "restore ne peut jamais cibler un commit précis comme source"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "revert ajoute un nouveau commit qui annule l'effet d'un commit précédent, sans réécrire l'historique : sûr sur une branche partagée. reset déplace la référence de branche et peut modifier l'index et/ou le répertoire de travail selon le mode (--soft, --mixed, --hard), ce qui réécrit potentiellement l'historique local. restore restaure le contenu de fichiers depuis une source (index, un commit) sans déplacer de référence de branche. Décrire précisément l'effet attendu avant toute commande destructive ; le reflog peut aider à retrouver un commit local égaré après un reset.",
+    "commonTrap": "Utiliser reset --hard sur une branche déjà partagée/poussée, réécrivant un historique que d'autres personnes ont déjà récupéré.",
+    "keyConcept": "git-reset-revert-restore",
+    "tags": ["Git"],
+    "relatedQuestionIds": ["G03"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "revert ajoute un commit inverse, utile sur historique partagé ; reset déplace une référence et peut modifier index/working tree ; restore restaure des fichiers depuis une source ; le reflog peut aider à retrouver un commit local.",
+    "proofType": "definition"
+  },
+  {
+    "id": "G05",
+    "source": "pdf",
+    "sourcePage": 56,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Résolution de conflit",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Comment aborder méthodiquement la résolution d'un conflit de merge, au-delà de choisir mécaniquement « notre » ou « leur » version ?",
+    "code": null,
+    "expectedPoints": [
+      "Comprendre l'intention des deux changements en conflit, pas seulement leur texte.",
+      "Lire le contexte autour du conflit, éditer le résultat souhaité, puis tester avant de marquer résolu.",
+      "« Garder ours/theirs » systématiquement n'est pas une stratégie métier fiable.",
+      "Des tests qui passent après résolution ne prouvent pas qu'aucune évolution utile n'a été supprimée si le contrat n'est pas couvert par un test."
+    ],
+    "modelAnswer": "Résoudre un conflit correctement demande de comprendre l'intention de chacun des deux changements en conflit (pourquoi ce code a été modifié de part et d'autre), pas seulement de comparer leur texte ligne à ligne. Lire le contexte autour des marqueurs de conflit, éditer manuellement le résultat qui préserve les deux intentions si possible, puis tester avant de marquer le conflit résolu. Choisir systématiquement « garder la version locale » ou « garder la version distante » (--ours/--theirs) sur tout le fichier n'est pas une stratégie fiable : cela peut supprimer silencieusement une évolution légitime de l'autre côté. Des tests qui passent après résolution ne garantissent rien si le comportement supprimé n'était pas couvert par un test.",
+    "commonTrap": "Résoudre un conflit en choisissant systématiquement --ours ou --theirs sans lire le contenu réel des deux changements, perdant potentiellement une correction importante.",
+    "keyConcept": "merge-conflict-resolution-method",
+    "tags": ["Git", "merge"],
+    "relatedQuestionIds": ["G03"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Comprendre l'intention des deux changements et le résultat attendu ; lire le contexte, éditer, tester, puis marquer résolu ; garder ours/theirs sur tout n'est pas une stratégie métier.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "G08",
+    "source": "pdf",
+    "sourcePage": 57,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Image d'exécution CI",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Que fait l'attribut image d'un job GitLab CI, et un executor shell peut-il l'utiliser ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Avec un executor compatible (Docker), image fournit l'environnement d'exécution du job ; un executor shell ne se transforme pas en conteneur grâce à image, il l'ignore ou échoue selon la configuration"
+      },
+      {
+        "id": "b",
+        "text": "image fonctionne de façon identique quel que soit l'executor du runner"
+      },
+      {
+        "id": "c",
+        "text": "services garantit que la base de données associée est immédiatement prête sans attente"
+      },
+      {
+        "id": "d",
+        "text": "Un job avec image n'a jamais besoin de services additionnels"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Avec un executor Docker (ou Kubernetes) compatible, l'attribut image fournit l'environnement d'exécution du job dans un conteneur dédié. Un executor shell exécute directement sur la machine du runner et ne peut pas convertir cette exécution en conteneur simplement parce qu'une image est déclarée : le comportement dépend de la configuration réelle du runner. services ajoute des services auxiliaires (base de données, cache) au job, mais le script ne doit pas supposer que ces services sont immédiatement prêts sans attente adaptée.",
+    "commonTrap": "Déclarer une image dans un job GitLab CI en supposant qu'elle s'applique quel que soit le type de runner utilisé, sans vérifier l'executor réellement configuré.",
+    "keyConcept": "gitlab-ci-image-executor",
+    "tags": ["Git/GitLab", "CI/CD"],
+    "relatedQuestionIds": ["G07"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Avec un executor compatible, image fournit l'environnement du job ; un executor shell ne se transforme pas en conteneur grâce à image ; services ajoute des services auxiliaires sans garantir leur disponibilité immédiate.",
+    "proofType": "counterexample"
+  },
+  {
+    "id": "G10",
+    "source": "pdf",
+    "sourcePage": 57,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "workflow:rules vs rules",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre workflow:rules et les rules d'un job en GitLab CI ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "workflow:rules décide si le pipeline entier est créé ; les rules d'un job décident de sa présence/comportement à l'intérieur d'un pipeline déjà créé"
+      },
+      {
+        "id": "b",
+        "text": "Les deux mécanismes contrôlent exactement la même chose au même niveau"
+      },
+      {
+        "id": "c",
+        "text": "rules ne peut jamais dépendre du type d'événement déclencheur (push, merge request, tag)"
+      },
+      {
+        "id": "d",
+        "text": "Des règles trop larges ne peuvent jamais créer de pipelines en double"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "workflow:rules détermine si le pipeline dans son ensemble doit être créé pour un événement donné. Les rules déclarées au niveau d'un job décident, à l'intérieur d'un pipeline déjà créé, si ce job précis s'exécute et comment. Il faut distinguer les types de déclenchement (push, merge_request_event, tag, schedule, déclenchement API ou manuel) : des règles trop larges peuvent créer des pipelines en double, par exemple un sur push ET un sur merge_request_event pour la même modification.",
+    "commonTrap": "Configurer des règles qui déclenchent un pipeline à la fois sur push et sur merge_request_event pour le même changement, créant des exécutions redondantes.",
+    "keyConcept": "workflow-rules-vs-job-rules",
+    "tags": ["Git/GitLab", "CI/CD"],
+    "relatedQuestionIds": ["G07", "G09"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "workflow:rules décide la création du pipeline ; les rules d'un job décident sa présence/comportement ; des règles trop larges peuvent créer des pipelines push et MR en doublon.",
+    "proofType": "counterexample"
+  },
+  {
+    "id": "G11",
+    "source": "pdf",
+    "sourcePage": 57,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Pipelines parent-enfant et multi-projet",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre un pipeline parent-enfant et un pipeline multi-projet ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Parent-enfant découpe un pipeline d'un même projet (utile pour un monorepo) ; multi-projet orchestre des pipelines d'autres projets ; les deux ajoutent des questions de statut transmis et de propagation des variables"
+      },
+      {
+        "id": "b",
+        "text": "Les deux mécanismes ne peuvent s'appliquer qu'à un seul et même dépôt"
+      },
+      {
+        "id": "c",
+        "text": "Un pipeline enfant partage automatiquement toutes les variables du parent sans configuration"
+      },
+      {
+        "id": "d",
+        "text": "Le multi-projet améliore toujours la lisibilité sans aucun compromis"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Un pipeline parent-enfant découpe la configuration d'un même projet (par exemple un monorepo avec plusieurs sous-projets), avec une configuration potentiellement dynamique. Un pipeline multi-projet orchestre des pipelines déclenchés dans d'autres projets/dépôts. Les deux peuvent améliorer lisibilité et parallélisme, mais ajoutent des questions de propagation de statut et de variables entre les pipelines liés, à configurer explicitement plutôt que supposer un partage automatique.",
+    "commonTrap": "Supposer qu'un pipeline enfant ou un pipeline d'un autre projet reçoit automatiquement toutes les variables du déclencheur, sans configuration explicite de propagation.",
+    "keyConcept": "parent-child-vs-multi-project-pipeline",
+    "tags": ["Git/GitLab", "CI/CD"],
+    "relatedQuestionIds": ["G07"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Parent-enfant découpe un pipeline d'un même projet, utile pour monorepo ; multi-project orchestre d'autres projets ; ajoute des questions de statut transmis et propagation des variables.",
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "G12",
+    "source": "pdf",
+    "sourcePage": 57,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Cache vs artifacts",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre le cache et les artifacts d'un pipeline GitLab CI ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Le cache accélère de façon opportuniste (souvent les dépendances), sans garantie de disponibilité ; les artifacts sont des sorties nommées d'un job (JAR, dist, rapports), avec une rétention définie ; le pipeline doit fonctionner sans cache"
+      },
+      {
+        "id": "b",
+        "text": "Le cache et les artifacts garantissent tous deux une disponibilité et une rétention identiques"
+      },
+      {
+        "id": "c",
+        "text": "Un cache mutable est le mécanisme recommandé pour transmettre le livrable d'une release"
+      },
+      {
+        "id": "d",
+        "text": "Les artifacts ne peuvent jamais être téléchargés en dehors du pipeline qui les a produits"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Le cache sert à accélérer de façon opportuniste, typiquement pour réutiliser des dépendances déjà téléchargées entre exécutions, sans garantie qu'il soit disponible à chaque run. Les artifacts sont les sorties nommées et identifiées d'un job (binaire compilé, dossier de build, rapports de test), avec une politique de rétention explicite. Un pipeline doit rester fonctionnellement correct même sans cache disponible. Utiliser une clé de cache liée au fichier de lock des dépendances, et ne jamais faire transiter le livrable réel d'une release par un cache (mutable et non garanti), mais par des artifacts.",
+    "commonTrap": "Transmettre le livrable final d'une release via le cache plutôt que via des artifacts, alors que le cache n'offre aucune garantie de disponibilité ou d'intégrité.",
+    "keyConcept": "gitlab-cache-vs-artifacts",
+    "tags": ["Git/GitLab", "CI/CD"],
+    "relatedQuestionIds": ["G07"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Cache : accélération opportuniste souvent pour dépendances. Artifacts : sorties nommées du job avec rétention. Le pipeline doit fonctionner sans cache ; ne pas transmettre le livrable de release par un cache mutable.",
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "G13",
+    "source": "pdf",
+    "sourcePage": 58,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Variables masquées et protégées",
+    "difficulty": "advanced",
+    "type": "mcq",
+    "question": "Une variable CI marquée « masquée » (masked) est-elle automatiquement un secret bien protégé ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Non entièrement : masquée réduit son affichage dans les logs ; protégée limite son usage à certains contextes (branches/tags protégés) ; un script du job qui a accès à la variable peut encore l'exfiltrer volontairement"
+      },
+      {
+        "id": "b",
+        "text": "Une variable masquée est totalement inaccessible à tout script exécuté dans le job"
+      },
+      {
+        "id": "c",
+        "text": "Marquer une variable protégée empêche automatiquement toute fuite, quel que soit le script exécuté"
+      },
+      {
+        "id": "d",
+        "text": "Masquée et protégée sont deux noms différents pour la même protection"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Une variable masquée réduit son affichage dans les logs de pipeline (elle est remplacée par des astérisques si elle apparaît en clair). Une variable protégée limite sa disponibilité à certains contextes (branches ou tags protégés). Aucune des deux ne peut empêcher un script du job, qui a un accès légitime à la valeur pour l'utiliser, de l'exfiltrer volontairement (par exemple en l'envoyant vers un service externe). Il faut relire les changements de configuration CI, limiter les droits d'accès, et privilégier des credentials à durée de vie courte ou un mécanisme OIDC quand l'environnement le permet.",
+    "commonTrap": "Considérer qu'une variable « masquée » est équivalente à un secret parfaitement protégé contre toute exfiltration par un script malveillant du pipeline.",
+    "keyConcept": "masked-protected-variable-limits",
+    "tags": ["Git/GitLab", "Sécurité", "CI/CD"],
+    "relatedQuestionIds": ["G06", "G14"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Masquée réduit l'affichage, protégée limite certains contextes ; un script malveillant peut encore exfiltrer une variable accessible ; relire les changements CI, limiter les droits, privilégier des credentials courts/OIDC.",
+    "proofType": "security"
+  },
+  {
+    "id": "G15",
+    "source": "pdf",
+    "sourcePage": 58,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Artefact unique promu",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Pourquoi faut-il déployer exactement le même artefact testé, plutôt que de recompiler avant chaque déploiement ?",
+    "code": null,
+    "expectedPoints": [
+      "Construire, tester, identifier l'artefact (digest/version), puis promouvoir ce résultat précis.",
+      "Recompiler pour la production peut introduire un binaire différent (versions de dépendances résolues différemment, compilateur différent).",
+      "Archiver commit, image, dépendances et rapports associés à l'artefact promu.",
+      "Le rollback doit cibler un artefact connu et compatible avec le schéma courant."
+    ],
+    "modelAnswer": "Le principe est de construire une seule fois, de tester cet artefact précis, de l'identifier de façon unique (par digest ou version immuable), puis de promouvoir ce même artefact d'un environnement à l'autre sans le recompiler. Recompiler juste avant un déploiement en production peut résoudre des versions de dépendances légèrement différentes ou utiliser un compilateur différent, produisant un binaire distinct de celui réellement testé, ce qui invalide la garantie apportée par les tests. Archiver le commit source, l'image, les dépendances et les rapports associés à l'artefact promu permet une traçabilité complète. Un rollback doit toujours cibler un artefact connu et compatible avec le schéma de données courant, pas une reconstruction à la volée.",
+    "commonTrap": "Recompiler l'application à chaque étape du pipeline (test, staging, production) au lieu de promouvoir un seul artefact déjà construit et testé.",
+    "keyConcept": "build-once-promote-artifact",
+    "tags": ["Git/GitLab", "CI/CD", "déploiement"],
+    "relatedQuestionIds": ["G12"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Construire, tester, identifier par digest/version, puis promouvoir ce résultat. Recompiler pour la prod peut introduire un autre binaire. Le rollback doit cibler un artefact connu et compatible avec le schéma courant.",
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "G16",
+    "source": "pdf",
+    "sourcePage": 58,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Déploiements concurrents",
+    "difficulty": "advanced",
+    "type": "open",
+    "question": "Comment un ancien pipeline peut-il écraser un déploiement plus récent, et comment l'éviter ?",
+    "code": null,
+    "expectedPoints": [
+      "Un pipeline lancé plus tôt peut terminer après un pipeline lancé plus tard (durées d'exécution variables).",
+      "Sans sérialisation, le déploiement le plus lent réinstalle sa version après le déploiement le plus rapide, même si celui-ci est plus récent.",
+      "Sérialiser les déploiements par environnement (par exemple avec resource_group) empêche deux déploiements concurrents sur la même cible.",
+      "Une approbation manuelle doit porter sur un artefact et une cible clairement identifiés pour éviter toute ambiguïté."
+    ],
+    "modelAnswer": "Deux pipelines peuvent être déclenchés à quelques minutes d'écart, mais rien ne garantit qu'ils se terminent dans le même ordre : un pipeline plus ancien peut avoir une étape de test plus longue et terminer son déploiement après un pipeline plus récent, réinstallant alors une version obsolète sur l'environnement cible. La solution est de sérialiser les déploiements par environnement, par exemple avec un resource_group GitLab qui garantit qu'un seul déploiement à la fois s'exécute pour une cible donnée, en mettant en file d'attente ou en annulant les pipelines obsolètes selon la stratégie choisie. Une étape d'approbation manuelle doit toujours porter sur un artefact et une cible précisément identifiés, pour éviter d'approuver par erreur un déploiement devenu obsolète.",
+    "commonTrap": "Ne pas sérialiser les déploiements vers un même environnement, laissant deux pipelines concurrents se disputer l'ordre final de déploiement.",
+    "keyConcept": "concurrent-deployment-race",
+    "tags": ["Git/GitLab", "CI/CD", "déploiement", "piège"],
+    "relatedQuestionIds": ["G15"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Un ancien pipeline peut terminer après le nouveau et réinstaller une ancienne version. Sérialiser par environnement (resource_group) et contrôler la stratégie des pipelines obsolètes. Une approbation manuelle doit porter sur un artefact et une cible identifiés.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "G17",
+    "source": "pdf",
+    "sourcePage": 58,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Tests verts en local, rouges en CI",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Un test passe systématiquement en local mais échoue en CI. Quelle méthode de diagnostic suivre, et quel réflexe éviter ?",
+    "code": null,
+    "expectedPoints": [
+      "Comparer JDK/Node, système d'exploitation, locales, fuseau horaire, dépendances verrouillées, variables d'environnement, droits de fichiers et services disponibles.",
+      "Reproduire le problème avec une installation propre plutôt que de deviner.",
+      "Ne pas résoudre systématiquement en ajoutant des retries automatiques au test.",
+      "Ne pas mettre allow_failure sur le job de test pour faire disparaître le rouge sans corriger la cause."
+    ],
+    "modelAnswer": "Il faut comparer méthodiquement l'environnement local et l'environnement CI : version de JDK/Node, système d'exploitation, locale, fuseau horaire, versions exactes des dépendances (vérifier le lockfile), variables d'environnement définies, droits sur les fichiers, et disponibilité des services externes (base de données, cache) attendus par le test. Reproduire le problème avec une installation propre et minimale aide à isoler la vraie cause plutôt que de deviner. Ajouter des retries automatiques sur un test instable, ou marquer le job allow_failure pour faire disparaître le rouge, masque le problème réel sans le résoudre et peut cacher une vraie régression future.",
+    "commonTrap": "Ajouter un retry automatique ou allow_failure sur un test qui échoue en CI pour « faire passer » le pipeline, sans avoir diagnostiqué la différence d'environnement réelle.",
+    "keyConcept": "ci-vs-local-test-discrepancy",
+    "tags": ["Git/GitLab", "CI/CD", "Tests", "diagnostic"],
+    "relatedQuestionIds": [],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Comparer JDK/Node, OS, locales, timezone, dépendances lockées, variables, droits et services. Reproduire avec installation propre. Ne pas résoudre systématiquement en ajoutant des retries ou en mettant allow_failure.",
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "G18",
+    "source": "pdf",
+    "sourcePage": 58,
+    "chapter": "Git & GitLab CI/CD",
+    "theme": "Git/GitLab",
+    "subtheme": "Pipeline lent",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Comment diagnostiquer et améliorer un pipeline CI devenu lent, sans sacrifier la couverture des vérifications ?",
+    "code": null,
+    "expectedPoints": [
+      "Mesurer séparément durée utile d'exécution et temps d'attente d'un runner disponible.",
+      "Optimiser le cache de dépendances, paralléliser les jobs indépendants, cibler les tests justifiés, alléger les images et le transfert d'artifacts.",
+      "Le découpage parent-enfant ne rend rien automatiquement plus rapide en soi.",
+      "Un build plus rapide qui ignore une migration ou une vérification critique n'est pas une amélioration réelle."
+    ],
+    "modelAnswer": "Il faut d'abord mesurer où le temps est réellement consommé : durée utile d'exécution des jobs versus temps d'attente d'un runner disponible, souvent négligé. Optimiser le cache des dépendances (clé liée au lockfile), paralléliser les jobs réellement indépendants, cibler les tests exécutés à chaque run (garder les plus rapides et représentatifs, réserver les plus lourds à des déclenchements moins fréquents si justifié), alléger les images utilisées et le volume d'artifacts transférés. Un découpage en pipelines parent-enfant réorganise la structure mais ne rend rien automatiquement plus rapide en soi. Un pipeline plus rapide qui supprime une vérification critique (migration, test de sécurité) n'est pas une amélioration : la vitesse ne doit jamais se faire au détriment de la couverture nécessaire.",
+    "commonTrap": "Accélérer un pipeline en supprimant ou en rendant optionnelle une vérification critique (comme un test de migration), confondant vitesse et amélioration réelle.",
+    "keyConcept": "slow-pipeline-diagnosis",
+    "tags": ["Git/GitLab", "CI/CD", "performance"],
+    "relatedQuestionIds": ["G12"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": true,
+    "sourceTextSummary": "Mesurer durée utile et attente runner. Optimiser cache de dépendances, jobs indépendants, tests ciblés justifiés, images et transfert d'artifacts. Parent-enfant ne rend rien automatiquement plus rapide. Un build plus rapide qui ignore une migration critique n'est pas une amélioration.",
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "TRAP-GIT-01",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Git/GitLab",
+    "subtheme": "gitignore rétroactif",
+    "difficulty": "junior",
+    "type": "mcq",
+    "question": "Ajouter un fichier déjà suivi à .gitignore suffit-il à ce que Git cesse de le suivre ?",
+    "code": "echo \"config/secrets.env\" >> .gitignore\ngit add . && git commit -m \"ignore secrets\"\n# secrets.env reste suivi et continue d'apparaître dans les commits !",
+    "options": [
+      {
+        "id": "a",
+        "text": "Non : .gitignore n'affecte que les fichiers non encore suivis ; un fichier déjà suivi doit être explicitement retiré du suivi avec git rm --cached avant de profiter de la règle d'exclusion"
+      },
+      {
+        "id": "b",
+        "text": "Ajouter une entrée à .gitignore déréférence automatiquement tout fichier déjà suivi correspondant"
+      },
+      {
+        "id": "c",
+        "text": ".gitignore supprime rétroactivement le fichier de tout l'historique existant"
+      },
+      {
+        "id": "d",
+        "text": "Un fichier suivi ignoré n'apparaît plus jamais dans git status, même modifié"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": ".gitignore ne s'applique qu'aux fichiers non suivis : il empêche Git de proposer de les ajouter, mais n'a aucun effet sur un fichier déjà suivi (déjà présent dans l'index). Pour arrêter de suivre un fichier déjà committé tout en le gardant sur le disque, il faut git rm --cached <fichier>, committer ce retrait, puis .gitignore empêche son ré-ajout accidentel. Le fichier reste néanmoins présent dans l'historique des commits passés.",
+    "commonTrap": "Ajouter un fichier sensible à .gitignore après coup, en pensant que cela suffit à le retirer du dépôt et de son historique.",
+    "keyConcept": "gitignore-not-retroactive",
+    "tags": ["Git", "piège"],
+    "relatedQuestionIds": ["G06"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "counterexample"
+  },
+  {
+    "id": "TRAP-GIT-02",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Git/GitLab",
+    "subtheme": "force-push et force-with-lease",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Pourquoi préférer `git push --force-with-lease` à `git push --force` après un rebase local ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "--force-with-lease vérifie que la branche distante n'a pas changé depuis notre dernière récupération avant d'écraser, évitant d'effacer par erreur des commits poussés entre-temps par quelqu'un d'autre ; --force écrase sans cette vérification"
+      },
+      {
+        "id": "b",
+        "text": "--force et --force-with-lease ont un comportement strictement identique"
+      },
+      {
+        "id": "c",
+        "text": "--force-with-lease empêche totalement tout force-push, quelle que soit la situation"
+      },
+      {
+        "id": "d",
+        "text": "--force est toujours plus sûr car il ne pose jamais de question"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "--force-with-lease vérifie que la référence distante correspond à ce que l'on a récupéré en dernier avant de l'écraser, échouant si quelqu'un d'autre a poussé entre-temps. Cela protège contre l'écrasement accidentel du travail d'un collègue qui a poussé sur la même branche pendant qu'on préparait son propre rebase. --force écrase sans cette vérification, quel que soit l'état actuel de la branche distante.",
+    "commonTrap": "Utiliser --force par habitude après un rebase, sans réaliser le risque d'écraser silencieusement le travail de quelqu'un d'autre poussé entre-temps.",
+    "keyConcept": "force-with-lease-safety",
+    "tags": ["Git", "rebase", "piège"],
+    "relatedQuestionIds": ["G03"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "security"
+  },
+  {
+    "id": "TRAP-GIT-03",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Git/GitLab",
+    "subtheme": "HEAD détaché",
+    "difficulty": "confirmed",
+    "type": "code",
+    "question": "Pourquoi un commit créé après `git checkout <hash-de-commit>` peut-il être perdu si on ne fait rien d'autre ?",
+    "code": "git checkout a1b2c3d  # HEAD détaché, plus attaché à aucune branche\n# ... modifications et commit ...\ngit checkout main      # le commit créé en HEAD détaché devient inaccessible par nom !",
+    "expectedAnswer": "Se placer directement sur un hash de commit met le dépôt en état de « HEAD détaché » : on n'est plus sur une branche nommée. Un commit créé dans cet état n'est référencé par aucune branche ; en retournant sur main, ce commit devient orphelin et invisible dans l'historique habituel, bien qu'il reste temporairement récupérable via le reflog jusqu'au nettoyage du garbage collector Git.",
+    "acceptedConcepts": [
+      "HEAD détaché",
+      "commit orphelin",
+      "reflog",
+      "création de branche pour sauvegarder"
+    ],
+    "explanation": "checkout sur un hash de commit (plutôt qu'un nom de branche) place Git en état de HEAD détaché : les commits créés dans cet état ne sont rattachés à aucune branche. En changeant de branche ensuite, ces commits deviennent orphelins, invisibles dans le log normal des branches, bien que temporairement récupérables via git reflog avant que le garbage collector ne les élague. La bonne pratique est de créer une branche (git checkout -b nom-de-branche) avant de committer en état détaché.",
+    "commonTrap": "Committer du travail important en HEAD détaché sans créer de branche, risquant de le perdre définitivement après être retourné sur une autre branche.",
+    "keyConcept": "detached-head-orphan-commit",
+    "tags": ["Git", "piège"],
+    "relatedQuestionIds": ["G04"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "counterexample"
+  },
+  {
+    "id": "TRAP-GIT-04",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "Pièges classiques d'entretien",
+    "theme": "Git/GitLab",
+    "subtheme": "cherry-pick et nouveau hash",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Un commit cherry-pické sur une autre branche a-t-il le même hash que le commit original ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Non : cherry-pick applique le même changement mais crée un nouveau commit avec un nouveau hash (métadonnées de parent différentes) ; Git peut ne pas reconnaître automatiquement qu'il s'agit du même changement lors d'un futur merge"
+      },
+      {
+        "id": "b",
+        "text": "cherry-pick conserve toujours exactement le même hash de commit sur la nouvelle branche"
+      },
+      {
+        "id": "c",
+        "text": "cherry-pick déplace le commit plutôt que de le dupliquer, le retirant de la branche d'origine"
+      },
+      {
+        "id": "d",
+        "text": "Un commit cherry-pické ne peut jamais entrer en conflit avec un merge ultérieur"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "cherry-pick applique le contenu (le diff) d'un commit existant sur la branche courante, mais crée un nouveau commit avec un nouveau hash (le parent et le contexte diffèrent). Le commit original reste inchangé sur sa branche d'origine. Comme les hashs diffèrent, un merge ultérieur entre les deux branches peut ne pas reconnaître automatiquement qu'il s'agit du même changement, provoquant parfois des conflits ou des doublons apparents dans l'historique.",
+    "commonTrap": "Cherry-picker un correctif sur une branche de release en pensant que Git reconnaîtra ensuite automatiquement ce changement comme identique lors d'un futur merge avec la branche principale.",
+    "keyConcept": "cherry-pick-new-hash",
+    "tags": ["Git", "piège"],
+    "relatedQuestionIds": ["G03"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "counterexample"
+  },
+  {
+    "id": "ADV-SQL-01",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "CTE récursive",
+    "difficulty": "advanced",
+    "type": "code",
+    "question": "Comment récupérer tous les subordonnés (directs et indirects) d'un manager donné dans une table employees(id, name, manager_id) avec une seule requête ?",
+    "code": "WITH RECURSIVE subordinates AS (\n  SELECT id, name, manager_id FROM employees WHERE id = :managerId\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id\n  FROM employees e\n  JOIN subordinates s ON e.manager_id = s.id\n)\nSELECT * FROM subordinates WHERE id != :managerId;",
+    "expectedAnswer": "Une CTE récursive (WITH RECURSIVE) définit un cas de base (le manager lui-même) puis un cas récursif qui rejoint la table employees sur manager_id pour remonter chaque niveau de subordination, jusqu'à ce qu'aucune nouvelle ligne ne soit trouvée. UNION ALL évite de dédupliquer inutilement à chaque itération.",
+    "acceptedConcepts": [
+      "CTE récursive",
+      "WITH RECURSIVE",
+      "cas de base et cas récursif",
+      "hiérarchie arborescente"
+    ],
+    "explanation": "Une CTE récursive combine un cas de base (point de départ, ici le manager donné) et un cas récursif qui référence la CTE elle-même pour progresser d'un niveau à chaque itération, jusqu'à ce qu'aucune nouvelle ligne ne soit produite. C'est l'outil standard pour parcourir une hiérarchie de profondeur arbitraire (organigramme, arborescence de catégories) sans connaître le nombre de niveaux à l'avance.",
+    "commonTrap": "Essayer de répondre à ce besoin avec plusieurs auto-jointures fixes (une par niveau), ce qui ne fonctionne que jusqu'à une profondeur connue à l'avance.",
+    "keyConcept": "recursive-cte-hierarchy",
+    "tags": ["SQL", "CTE", "récursivité"],
+    "relatedQuestionIds": ["TRAP-SQL-08"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "code"
+  },
+  {
+    "id": "ADV-SQL-02",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "LAG et LEAD",
+    "difficulty": "advanced",
+    "type": "code",
+    "question": "Comment calculer, pour chaque commande d'un client triée par date, le nombre de jours écoulés depuis sa commande précédente ?",
+    "code": "SELECT\n  customer_id,\n  created_at,\n  created_at - LAG(created_at) OVER (\n    PARTITION BY customer_id ORDER BY created_at\n  ) AS days_since_previous\nFROM orders;",
+    "expectedAnswer": "LAG(created_at) OVER (PARTITION BY customer_id ORDER BY created_at) accède à la valeur de created_at de la ligne précédente dans la même partition (même client), triée par date. Soustraire cette valeur à la date courante donne l'écart. La première commande de chaque client a NULL pour LAG, car il n'y a pas de ligne précédente.",
+    "acceptedConcepts": ["LAG", "fonction fenêtre", "PARTITION BY", "accès à la ligne précédente"],
+    "explanation": "LAG (et son symétrique LEAD pour la ligne suivante) sont des fonctions fenêtre qui donnent accès à une valeur d'une autre ligne de la même partition sans jointure ni sous-requête corrélée. PARTITION BY customer_id isole les commandes par client ; ORDER BY created_at définit l'ordre dans lequel « précédent » et « suivant » sont déterminés. La première ligne de chaque partition n'a pas de ligne précédente, donc LAG y renvoie NULL par défaut (ou une valeur par défaut si on la précise).",
+    "commonTrap": "Essayer de résoudre ce besoin avec une auto-jointure complexe sur une colonne de rang calculée séparément, alors que LAG/LEAD le font nativement en une seule fonction.",
+    "keyConcept": "window-function-lag-lead",
+    "tags": ["SQL", "fonctions fenêtre"],
+    "relatedQuestionIds": ["ADD-SQL-01"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "code"
+  },
+  {
+    "id": "ADV-SQL-03",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Somme cumulative",
+    "difficulty": "confirmed",
+    "type": "code",
+    "question": "Comment calculer un total cumulé (running total) des ventes journalières sans sous-requête corrélée ?",
+    "code": "SELECT\n  sale_date,\n  amount,\n  SUM(amount) OVER (ORDER BY sale_date) AS running_total\nFROM daily_sales;",
+    "expectedAnswer": "SUM(amount) OVER (ORDER BY sale_date) calcule, pour chaque ligne, la somme de amount depuis le début jusqu'à cette ligne incluse (fenêtre par défaut : du début de la partition à la ligne courante quand ORDER BY est présent sans borne explicite). C'est un total cumulé en une seule passe, sans sous-requête corrélée coûteuse.",
+    "acceptedConcepts": ["fonction fenêtre", "running total", "frame par défaut", "SUM OVER"],
+    "explanation": "Sans PARTITION BY, la fenêtre couvre toute la table ; avec ORDER BY et sans spécification explicite de bornes, la frame par défaut est « du début jusqu'à la ligne courante » (RANGE UNBOUNDED PRECEDING AND CURRENT ROW), ce qui produit exactement un total cumulé. C'est bien plus efficace qu'une sous-requête corrélée qui recalculerait la somme pour chaque ligne indépendamment (coût quadratique).",
+    "commonTrap": "Calculer un total cumulé avec une sous-requête corrélée (SELECT SUM(amount) FROM daily_sales d2 WHERE d2.sale_date <= d.sale_date), bien plus coûteuse qu'une fonction fenêtre.",
+    "keyConcept": "running-total-window-function",
+    "tags": ["SQL", "fonctions fenêtre", "performance"],
+    "relatedQuestionIds": ["ADV-SQL-02"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "code"
+  },
+  {
+    "id": "ADV-SQL-04",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "NTILE et percentiles",
+    "difficulty": "advanced",
+    "type": "mcq",
+    "question": "Que fait NTILE(4) OVER (ORDER BY revenue) appliqué à une liste de clients ?",
+    "code": "SELECT customer_id, revenue,\n  NTILE(4) OVER (ORDER BY revenue) AS quartile\nFROM customer_revenue;",
+    "options": [
+      {
+        "id": "a",
+        "text": "Il répartit les lignes triées en 4 groupes de taille aussi égale que possible (quartiles), numérotés de 1 à 4 selon l'ordre du tri"
+      },
+      {
+        "id": "b",
+        "text": "Il calcule la moyenne de revenue pour chaque groupe de 4 lignes consécutives"
+      },
+      {
+        "id": "c",
+        "text": "Il filtre pour ne garder que les 4 premières lignes triées"
+      },
+      {
+        "id": "d",
+        "text": "Il attribue le même numéro de groupe à toutes les lignes ayant un revenue égal"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "NTILE(n) répartit les lignes d'une partition, selon l'ordre défini, en n groupes de taille aussi égale que possible, en numérotant chaque groupe de 1 à n. Avec NTILE(4), c'est une répartition en quartiles : les 25% de lignes avec le revenue le plus faible reçoivent 1, jusqu'aux 25% les plus élevés qui reçoivent 4. Contrairement à RANK, deux lignes de valeur égale peuvent recevoir des numéros de groupe différents si elles tombent de part et d'autre d'une frontière de répartition.",
+    "commonTrap": "Confondre NTILE avec RANK/DENSE_RANK : NTILE répartit en groupes de taille égale, il ne reflète pas directement les valeurs égales comme le ferait un rang.",
+    "keyConcept": "ntile-quantiles",
+    "tags": ["SQL", "fonctions fenêtre"],
+    "relatedQuestionIds": ["ADD-SQL-01"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "definition"
+  },
+  {
+    "id": "ADV-SQL-05",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "UPSERT",
+    "difficulty": "advanced",
+    "type": "code",
+    "question": "Comment insérer une ligne ou mettre à jour un compteur existant en une seule instruction atomique, sans check-then-act en deux requêtes ?",
+    "code": "INSERT INTO page_views (page_id, views)\nVALUES (:pageId, 1)\nON CONFLICT (page_id)\nDO UPDATE SET views = page_views.views + 1;",
+    "expectedAnswer": "ON CONFLICT (PostgreSQL) — ou MERGE / ON DUPLICATE KEY UPDATE selon le moteur — réalise un UPSERT atomique : insère la ligne si la contrainte d'unicité n'est pas encore violée, sinon applique la mise à jour spécifiée, le tout en une seule instruction protégée contre les courses concurrentes, contrairement à un SELECT puis un INSERT/UPDATE séparés.",
+    "acceptedConcepts": ["UPSERT", "ON CONFLICT", "MERGE", "atomicité", "check-then-act évité"],
+    "explanation": "Un UPSERT (INSERT ... ON CONFLICT ... DO UPDATE en PostgreSQL, ON DUPLICATE KEY UPDATE en MySQL, ou MERGE en SQL Server/Oracle) combine insertion et mise à jour en une seule opération atomique côté base de données. Cela évite le pattern dangereux « vérifier si la ligne existe, puis insérer ou mettre à jour en conséquence » en deux requêtes séparées, qui laisse une fenêtre de course entre deux transactions concurrentes.",
+    "commonTrap": "Implémenter un compteur avec un SELECT pour vérifier l'existence puis un INSERT ou UPDATE conditionnel côté application, au lieu d'un UPSERT atomique côté base.",
+    "keyConcept": "upsert-atomic",
+    "tags": ["SQL", "concurrence", "UPSERT"],
+    "relatedQuestionIds": ["Q18"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "code"
+  },
+  {
+    "id": "ADV-SQL-06",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Index couvrant",
+    "difficulty": "advanced",
+    "type": "mcq",
+    "question": "Qu'est-ce qu'un index couvrant (covering index), et pourquoi accélère-t-il certaines requêtes sans même toucher la table ?",
+    "code": "CREATE INDEX idx_orders_covering\nON orders(customer_id, status) INCLUDE (created_at, amount);\n-- une requête filtrant sur customer_id/status et sélectionnant created_at/amount\n-- peut être servie entièrement depuis l'index (index-only scan)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un index couvrant contient toutes les colonnes nécessaires à une requête (filtre et sélection) ; le moteur peut alors répondre en lisant uniquement l'index (index-only scan), sans accéder à la table"
+      },
+      {
+        "id": "b",
+        "text": "Un index couvrant remplace systématiquement le besoin de toute autre stratégie d'indexation"
+      },
+      {
+        "id": "c",
+        "text": "INCLUDE ajoute les colonnes à la clé de tri de l'index, au même titre que les colonnes principales"
+      },
+      {
+        "id": "d",
+        "text": "Un index couvrant ne peut jamais accélérer une requête de lecture"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Un index couvrant contient, directement ou via une clause INCLUDE, toutes les colonnes nécessaires à une requête donnée (celles du filtre et celles sélectionnées). Le moteur peut alors répondre entièrement en lisant l'index (index-only scan), sans effectuer d'accès supplémentaire à la table (heap fetch), ce qui réduit les I/O. Les colonnes en INCLUDE ne font pas partie de la clé de tri de l'index, elles sont juste stockées à côté pour éviter l'accès table.",
+    "commonTrap": "Croire qu'ajouter toutes les colonnes utiles à un index en INCLUDE n'a aucun coût : cela alourdit l'index et son maintien à l'écriture, un compromis à mesurer.",
+    "keyConcept": "covering-index-index-only-scan",
+    "tags": ["SQL", "index", "performance"],
+    "relatedQuestionIds": ["Q14", "TRAP-SQL-04"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "ADV-SQL-07",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Règle du préfixe gauche",
+    "difficulty": "confirmed",
+    "type": "code",
+    "question": "Un index composite (a, b, c) accélère-t-il une requête qui filtre uniquement sur b et c, sans condition sur a ?",
+    "code": "CREATE INDEX idx_abc ON t(a, b, c);\nSELECT * FROM t WHERE b = 1 AND c = 2; -- ne peut généralement pas utiliser idx_abc efficacement\nSELECT * FROM t WHERE a = 1 AND b = 2; -- utilise idx_abc (préfixe a, b)",
+    "expectedAnswer": "Un index composite est structuré comme un arbre trié d'abord par la première colonne (a), puis par la seconde (b), puis la troisième (c). Une requête doit utiliser un préfixe gauche continu des colonnes de l'index (a, ou a+b, ou a+b+c) pour en bénéficier pleinement. Filtrer sur b et c sans condition sur a ne permet généralement pas d'exploiter efficacement cet index.",
+    "acceptedConcepts": [
+      "règle du préfixe gauche",
+      "index composite",
+      "leftmost prefix",
+      "ordre des colonnes"
+    ],
+    "explanation": "Un index composite (a, b, c) est trié hiérarchiquement : d'abord par a, puis à l'intérieur de chaque valeur de a par b, puis par c. Pour être exploité efficacement, une requête doit filtrer sur un préfixe continu à partir de la première colonne (a seul, ou a et b, ou les trois). Filtrer uniquement sur b et/ou c, en sautant a, ne permet généralement pas au moteur de restreindre efficacement sa recherche dans l'arbre de l'index.",
+    "commonTrap": "Créer un index composite en pensant qu'il accélère toute requête filtrant sur n'importe quel sous-ensemble de ses colonnes, indépendamment de l'ordre déclaré.",
+    "keyConcept": "leftmost-prefix-rule",
+    "tags": ["SQL", "index", "piège"],
+    "relatedQuestionIds": ["Q14"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "counterexample"
+  },
+  {
+    "id": "ADV-SQL-08",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Lecture d'un plan d'exécution",
+    "difficulty": "advanced",
+    "type": "open",
+    "question": "En lisant un EXPLAIN ANALYZE, comment distinguer une estimation de cardinalité incorrecte d'un vrai problème d'index manquant ?",
+    "code": null,
+    "expectedPoints": [
+      "Comparer le nombre de lignes estimé par le planificateur au nombre de lignes réellement retourné (rows vs actual rows).",
+      "Un grand écart entre estimation et réalité signale des statistiques obsolètes (ANALYZE à relancer), pas nécessairement un index manquant.",
+      "Un Seq Scan sur une grande table avec un filtre sélectif, avec une estimation correcte, pointe plutôt vers un index manquant.",
+      "Vérifier aussi le temps réellement passé à chaque nœud du plan, pas seulement le type d'opération."
+    ],
+    "modelAnswer": "EXPLAIN ANALYZE exécute réellement la requête et affiche, pour chaque nœud du plan, à la fois le nombre de lignes estimé par le planificateur et le nombre de lignes réellement produit (souvent noté rows=... vs actual rows=...). Un grand écart entre ces deux nombres indique des statistiques obsolètes (la table a beaucoup changé depuis le dernier ANALYZE), ce qui peut égarer le planificateur vers un mauvais plan sans qu'un index manque forcément. À l'inverse, un Seq Scan sur une grande table avec un filtre très sélectif et une estimation de cardinalité par ailleurs correcte pointe plutôt vers un vrai besoin d'index. Il faut aussi regarder le temps réellement passé à chaque étape (pas seulement le type d'opération) pour localiser le nœud qui coûte le plus.",
+    "commonTrap": "Ajouter un index dès qu'un Seq Scan apparaît dans le plan, sans vérifier si le problème vient plutôt de statistiques obsolètes ou d'une requête peu sélective où le Seq Scan est en réalité optimal.",
+    "keyConcept": "explain-analyze-cardinality-estimation",
+    "tags": ["SQL", "performance", "diagnostic"],
+    "relatedQuestionIds": ["ADD-SQL-02"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "ADV-SQL-09",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Vue matérialisée",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre une vue classique et une vue matérialisée ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Une vue classique réexécute sa requête à chaque interrogation ; une vue matérialisée stocke physiquement le résultat, qu'il faut rafraîchir explicitement (ou périodiquement) pour refléter les changements des tables sources"
+      },
+      {
+        "id": "b",
+        "text": "Une vue matérialisée se met toujours à jour automatiquement en temps réel comme une vue classique"
+      },
+      {
+        "id": "c",
+        "text": "Une vue classique et une vue matérialisée consomment exactement le même espace de stockage"
+      },
+      {
+        "id": "d",
+        "text": "Une vue matérialisée ne peut jamais être indexée"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Une vue classique est une requête nommée : elle est réexécutée intégralement à chaque interrogation, reflétant toujours l'état courant des données sources, sans stockage propre. Une vue matérialisée stocke physiquement le résultat de la requête au moment de sa création ou de son dernier rafraîchissement (REFRESH MATERIALIZED VIEW), ce qui la rend rapide à lire mais potentiellement périmée jusqu'au prochain rafraîchissement. Une vue matérialisée peut être indexée comme une table normale.",
+    "commonTrap": "Utiliser une vue matérialisée pour des données qui doivent être strictement à jour en temps réel, sans mécanisme de rafraîchissement suffisamment fréquent.",
+    "keyConcept": "view-vs-materialized-view",
+    "tags": ["SQL", "vues"],
+    "relatedQuestionIds": ["H42"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "definition"
+  },
+  {
+    "id": "ADV-SQL-10",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Partitionnement de table",
+    "difficulty": "advanced",
+    "type": "open",
+    "question": "Quel est l'intérêt de partitionner une grande table par plage de dates (range partitioning), et quel est le principal piège ?",
+    "code": null,
+    "expectedPoints": [
+      "Le partitionnement divise une grande table en sous-tables physiques selon un critère (souvent une plage de dates).",
+      "Le partition pruning permet au moteur d'ignorer entièrement les partitions non concernées par une requête filtrée sur la clé de partitionnement.",
+      "Purger de vieilles données devient une opération de suppression de partition (rapide), plutôt qu'un DELETE massif.",
+      "Une requête qui ne filtre pas sur la clé de partitionnement doit scanner toutes les partitions, perdant le bénéfice attendu."
+    ],
+    "modelAnswer": "Le partitionnement par plage de dates découpe une grande table en plusieurs sous-tables physiques, chacune couvrant une période donnée (par mois, par exemple). Pour une requête qui filtre sur cette date, le moteur peut ignorer entièrement les partitions non concernées (partition pruning), réduisant fortement le volume de données à parcourir. Cela facilite aussi la purge de vieilles données : supprimer une partition entière est une opération quasi instantanée, contrairement à un DELETE massif ligne par ligne qui génère beaucoup de journalisation. Le principal piège est qu'une requête qui ne filtre pas sur la colonne de partitionnement doit scanner l'ensemble des partitions, perdant tout le bénéfice attendu et pouvant même être plus lente qu'une table non partitionnée à cause de la coordination supplémentaire.",
+    "commonTrap": "Partitionner une table sans garantir que les requêtes fréquentes filtrent effectivement sur la colonne de partitionnement, annulant le bénéfice du partition pruning.",
+    "keyConcept": "range-partitioning-pruning",
+    "tags": ["SQL", "partitionnement", "performance"],
+    "relatedQuestionIds": ["Q24"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "ADV-SQL-11",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Anomalies d'isolation",
+    "difficulty": "advanced",
+    "type": "mcq",
+    "question": "Quelle différence précise existe entre lecture sale (dirty read), lecture non répétable (non-repeatable read) et lecture fantôme (phantom read) ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Dirty read : lire une donnée non encore validée par une autre transaction ; non-repeatable read : relire la même ligne donne une valeur différente car modifiée entre-temps ; phantom read : une même requête d'ensemble renvoie un nombre de lignes différent car des lignes ont été ajoutées/supprimées entre-temps"
+      },
+      {
+        "id": "b",
+        "text": "Les trois anomalies désignent exactement le même phénomène sous des noms différents"
+      },
+      {
+        "id": "c",
+        "text": "Une lecture fantôme concerne uniquement la modification d'une ligne déjà lue, jamais l'apparition de nouvelles lignes"
+      },
+      {
+        "id": "d",
+        "text": "Une lecture sale ne peut se produire qu'en lisant une donnée déjà validée (committed)"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Dirty read : une transaction lit une donnée modifiée mais pas encore validée (commit) par une autre transaction, qui pourrait encore être annulée (rollback). Non-repeatable read : relire la même ligne au sein d'une même transaction donne une valeur différente parce qu'une autre transaction l'a modifiée et validée entre-temps. Phantom read : une requête basée sur un critère (par exemple un COUNT ou une plage) renvoie un ensemble de lignes différent lors d'une seconde exécution dans la même transaction, parce que des lignes correspondant au critère ont été insérées ou supprimées entre-temps. Chaque niveau d'isolation (Read Uncommitted, Read Committed, Repeatable Read, Serializable) empêche un sous-ensemble croissant de ces anomalies.",
+    "commonTrap": "Confondre non-repeatable read (une ligne déjà lue change de valeur) et phantom read (de nouvelles lignes apparaissent ou disparaissent dans un ensemble de résultats).",
+    "keyConcept": "isolation-anomalies-precise",
+    "tags": ["SQL", "isolation", "transactions"],
+    "relatedQuestionIds": ["Q17"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "definition"
+  },
+  {
+    "id": "ADV-SQL-12",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Deadlock",
+    "difficulty": "advanced",
+    "type": "open",
+    "question": "Comment se forme un deadlock entre deux transactions SQL, et comment le prévenir structurellement plutôt que par un simple retry ?",
+    "code": "-- Transaction 1 : UPDATE accounts SET balance = balance - 10 WHERE id = 1;\n--                UPDATE accounts SET balance = balance + 10 WHERE id = 2;\n-- Transaction 2 (en parallèle) :\n--                UPDATE accounts SET balance = balance - 5  WHERE id = 2;\n--                UPDATE accounts SET balance = balance + 5  WHERE id = 1;\n-- Chacune verrouille une ligne puis attend l'autre : deadlock",
+    "expectedPoints": [
+      "Deux transactions acquièrent des verrous sur les mêmes ressources mais dans un ordre inverse.",
+      "Chacune attend un verrou détenu par l'autre : attente circulaire, ni l'une ni l'autre ne peut progresser.",
+      "Le moteur détecte généralement le deadlock et annule (rollback) l'une des deux transactions.",
+      "La prévention structurelle consiste à toujours acquérir les verrous dans un ordre global cohérent (par exemple trier les ID des lignes à verrouiller)."
+    ],
+    "modelAnswer": "Un deadlock se forme quand deux transactions verrouillent des ressources dans un ordre inverse : la transaction 1 verrouille la ligne 1 puis attend la ligne 2 (déjà verrouillée par la transaction 2), tandis que la transaction 2 verrouille la ligne 2 puis attend la ligne 1. Aucune des deux ne peut progresser : c'est une attente circulaire. La plupart des moteurs détectent cette situation et annulent automatiquement l'une des deux transactions (habituellement la moins coûteuse à annuler), qui doit alors être rejouée par l'application. La prévention structurelle, plus robuste qu'un simple retry après échec, consiste à toujours acquérir les verrous sur plusieurs ressources dans un ordre global cohérent et déterministe (par exemple trier les identifiants des comptes avant de les verrouiller), éliminant la possibilité même d'attente circulaire.",
+    "commonTrap": "Se contenter d'ajouter un retry automatique après un deadlock détecté, sans corriger l'ordre d'acquisition des verrous qui cause le problème structurellement.",
+    "keyConcept": "deadlock-lock-ordering",
+    "tags": ["SQL", "concurrence", "transactions"],
+    "relatedQuestionIds": [],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "ADV-SQL-13",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Statistiques obsolètes",
+    "difficulty": "advanced",
+    "type": "mcq",
+    "question": "Pourquoi une requête peut-elle brutalement devenir lente après un import massif de données, sans qu'aucune requête n'ait changé ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Les statistiques du planificateur (distribution des valeurs, cardinalité estimée) peuvent être devenues obsolètes après un changement massif de volume ; relancer ANALYZE (ou l'équivalent du moteur) permet au planificateur de choisir un meilleur plan"
+      },
+      {
+        "id": "b",
+        "text": "Un import massif de données n'a jamais d'impact sur le plan d'exécution choisi par le moteur"
+      },
+      {
+        "id": "c",
+        "text": "Les statistiques du planificateur se mettent toujours à jour instantanément après chaque écriture"
+      },
+      {
+        "id": "d",
+        "text": "Seul un redémarrage complet du serveur de base de données peut corriger ce problème"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "Le planificateur de requêtes s'appuie sur des statistiques (distribution des valeurs, nombre de lignes estimé) collectées périodiquement, pas recalculées à chaque écriture. Après un import massif ou une suppression importante, ces statistiques peuvent être très éloignées de la réalité, poussant le planificateur à choisir un plan inadapté (par exemple un Seq Scan alors qu'un index serait maintenant bien plus efficace, ou l'inverse). Relancer une commande d'analyse des statistiques (ANALYZE en PostgreSQL, équivalent selon le moteur) permet au planificateur de recalculer un plan pertinent, sans nécessiter de redémarrage.",
+    "commonTrap": "Chercher un problème de requête ou d'index après un ralentissement soudain post-import, sans penser à vérifier si les statistiques du planificateur sont simplement obsolètes.",
+    "keyConcept": "stale-statistics-query-plan",
+    "tags": ["SQL", "performance", "diagnostic"],
+    "relatedQuestionIds": ["ADV-SQL-08"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "diagnosis"
+  },
+  {
+    "id": "ADV-SQL-14",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Formes normales",
+    "difficulty": "confirmed",
+    "type": "mcq",
+    "question": "Quelle différence existe entre la 2NF et la 3NF en modélisation relationnelle ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "2NF élimine les dépendances partielles envers une clé composite (un attribut ne dépendant que d'une partie de la clé) ; 3NF élimine en plus les dépendances transitives (un attribut dépendant d'un autre attribut non-clé plutôt que directement de la clé)"
+      },
+      {
+        "id": "b",
+        "text": "2NF et 3NF garantissent exactement les mêmes contraintes sur le schéma"
+      },
+      {
+        "id": "c",
+        "text": "La 3NF s'applique uniquement aux tables sans clé primaire"
+      },
+      {
+        "id": "d",
+        "text": "Respecter la 3NF élimine automatiquement tout besoin d'index"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "La 2NF (après la 1NF, qui exige des valeurs atomiques) élimine les dépendances partielles : dans une table à clé composite, un attribut ne doit pas dépendre d'une seule partie de cette clé sans dépendre de l'ensemble. La 3NF va plus loin en éliminant les dépendances transitives : un attribut non-clé ne doit pas dépendre d'un autre attribut non-clé, mais directement de la clé primaire. Ces règles réduisent la redondance et les anomalies de mise à jour, au prix parfois de jointures supplémentaires à la lecture.",
+    "commonTrap": "Confondre normalisation (réduction de la redondance logique) et performance (parfois en tension, une dénormalisation ciblée pouvant améliorer la lecture au prix de la redondance).",
+    "keyConcept": "normal-forms-2nf-3nf",
+    "tags": ["SQL", "modélisation"],
+    "relatedQuestionIds": ["Q01"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "definition"
+  },
+  {
+    "id": "ADV-SQL-15",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "SELECT * anti-pattern",
+    "difficulty": "junior",
+    "type": "mcq",
+    "question": "Pourquoi éviter SELECT * dans du code applicatif, au-delà d'un simple style de code ?",
+    "code": null,
+    "options": [
+      {
+        "id": "a",
+        "text": "Cela transfère des colonnes inutiles (réseau, mémoire), peut empêcher un index-only scan si toutes les colonnes ne sont pas dans l'index, et casse silencieusement le code applicatif si une colonne est ajoutée ou réordonnée en base"
+      },
+      {
+        "id": "b",
+        "text": "SELECT * est toujours strictement équivalent en performance à lister les colonnes explicitement"
+      },
+      {
+        "id": "c",
+        "text": "SELECT * garantit un ordre de colonnes stable dans le temps, quels que soient les changements de schéma"
+      },
+      {
+        "id": "d",
+        "text": "Lister les colonnes explicitement n'a aucun avantage pour la maintenabilité du code"
+      }
+    ],
+    "correctOptionIds": ["a"],
+    "explanation": "SELECT * transfère toutes les colonnes de la table, y compris celles inutiles à l'usage réel, augmentant le volume réseau et mémoire pour rien. Cela peut aussi empêcher un index-only scan si l'index ne couvre pas toutes les colonnes de la table. Enfin, un changement de schéma (ajout ou réordonnancement de colonne) peut casser silencieusement un code applicatif qui mappe les résultats par position plutôt que par nom, ou faire fuiter une colonne sensible ajoutée par erreur dans une réponse API.",
+    "commonTrap": "Utiliser SELECT * par habitude ou pour « aller plus vite » à écrire la requête, sans considérer l'impact sur la performance et la fragilité du contrat de données.",
+    "keyConcept": "select-star-anti-pattern",
+    "tags": ["SQL", "performance", "bonnes pratiques"],
+    "relatedQuestionIds": ["ADV-SQL-06"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "ADV-SQL-16",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "CTE vs sous-requête",
+    "difficulty": "confirmed",
+    "type": "open",
+    "question": "Une CTE (WITH ...) est-elle toujours plus performante qu'une sous-requête équivalente, uniquement parce qu'elle est plus lisible ?",
+    "code": null,
+    "expectedPoints": [
+      "Une CTE améliore surtout la lisibilité en nommant une étape intermédiaire.",
+      "Selon le moteur et sa version, une CTE peut être « inlinée » (optimisée comme une sous-requête) ou matérialisée (calculée une fois puis réutilisée), avec des implications de performance différentes.",
+      "PostgreSQL a longtemps matérialisé systématiquement les CTE avant de permettre l'inlining optionnel dans des versions plus récentes.",
+      "Mesurer avec EXPLAIN ANALYZE plutôt que supposer qu'une forme est systématiquement meilleure que l'autre."
+    ],
+    "modelAnswer": "Une CTE (Common Table Expression, clause WITH) améliore avant tout la lisibilité en nommant une étape de calcul intermédiaire, ce qui facilite la compréhension d'une requête complexe. Sa performance par rapport à une sous-requête équivalente dépend fortement du moteur et de sa version : certains l'optimisent en l'« inlinant » dans le plan global (comme une sous-requête), d'autres la matérialisent (l'exécutent une fois, stockent le résultat, puis le réutilisent), ce qui peut être bénéfique si elle est référencée plusieurs fois, mais désavantageux si cela empêche certaines optimisations de filtre. PostgreSQL a longtemps matérialisé systématiquement les CTE avant de permettre l'inlining optionnel dans des versions plus récentes. Il faut mesurer avec EXPLAIN ANALYZE sur le moteur et la version réellement utilisés plutôt que de supposer qu'une forme est universellement meilleure.",
+    "commonTrap": "Généraliser un conseil de performance sur les CTE valable pour un moteur/une version précise à tous les contextes, sans vérifier le comportement réel du moteur utilisé.",
+    "keyConcept": "cte-vs-subquery-performance",
+    "tags": ["SQL", "CTE", "performance"],
+    "relatedQuestionIds": ["ADV-SQL-01"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "tradeoff"
+  },
+  {
+    "id": "ADV-SQL-17",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "Verrou pessimiste explicite",
+    "difficulty": "advanced",
+    "type": "code",
+    "question": "À quoi sert SELECT ... FOR UPDATE, et quel risque introduit-il s'il est mal utilisé ?",
+    "code": "BEGIN;\nSELECT * FROM inventory WHERE product_id = 1 FOR UPDATE; -- verrouille la ligne lue\nUPDATE inventory SET stock = stock - 1 WHERE product_id = 1;\nCOMMIT;",
+    "expectedAnswer": "FOR UPDATE verrouille explicitement les lignes lues jusqu'à la fin de la transaction, empêchant d'autres transactions de les modifier (voire de les lire selon le mode) entre-temps, ce qui protège un cycle lecture-puis-écriture contre une course. Mal utilisé (verrous pris dans un ordre incohérent, transaction trop longue), il augmente le risque de deadlock et de contention, bloquant d'autres transactions plus longtemps que nécessaire.",
+    "acceptedConcepts": [
+      "verrou pessimiste explicite",
+      "FOR UPDATE",
+      "cycle lecture-écriture",
+      "risque de deadlock"
+    ],
+    "explanation": "SELECT ... FOR UPDATE verrouille explicitement les lignes sélectionnées jusqu'au commit ou rollback de la transaction courante, protégeant un cycle lire-puis-modifier contre une modification concurrente entre la lecture et l'écriture (ce qu'un simple SELECT suivi d'un UPDATE séparé ne garantit pas). Le risque : si plusieurs transactions verrouillent des lignes dans un ordre différent, ou si la transaction reste ouverte trop longtemps avant de committer, cela augmente le risque de deadlock et de contention, bloquant d'autres transactions qui attendent les mêmes lignes.",
+    "commonTrap": "Utiliser FOR UPDATE sur un grand nombre de lignes ou garder la transaction ouverte longtemps (attente d'un appel externe, par exemple), bloquant inutilement d'autres transactions.",
+    "keyConcept": "select-for-update-pessimistic-lock",
+    "tags": ["SQL", "verrous", "concurrence"],
+    "relatedQuestionIds": ["H31", "ADV-SQL-12"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "code"
+  },
+  {
+    "id": "ADV-SQL-18",
+    "source": "added",
+    "sourcePage": null,
+    "chapter": "SQL avancé",
+    "theme": "SQL",
+    "subtheme": "FILTER et agrégation conditionnelle",
+    "difficulty": "advanced",
+    "type": "code",
+    "question": "Comment calculer en une seule requête, pour chaque client, le nombre de commandes payées ET le nombre de commandes annulées, sans deux requêtes séparées ?",
+    "code": "SELECT\n  customer_id,\n  COUNT(*) FILTER (WHERE status = 'PAID') AS paid_count,\n  COUNT(*) FILTER (WHERE status = 'CANCELLED') AS cancelled_count\nFROM orders\nGROUP BY customer_id;\n-- équivalent portable : COUNT(CASE WHEN status = 'PAID' THEN 1 END)",
+    "expectedAnswer": "FILTER (WHERE ...) (PostgreSQL) restreint une fonction d'agrégation à un sous-ensemble de lignes du groupe, permettant de calculer plusieurs agrégations conditionnelles côte à côte dans le même SELECT avec un seul GROUP BY. L'équivalent portable sur d'autres moteurs est COUNT(CASE WHEN condition THEN 1 END), qui compte les lignes où l'expression CASE renvoie une valeur non nulle.",
+    "acceptedConcepts": [
+      "FILTER WHERE",
+      "agrégation conditionnelle",
+      "CASE WHEN dans COUNT",
+      "un seul GROUP BY"
+    ],
+    "explanation": "FILTER (WHERE condition) appliqué à une fonction d'agrégation restreint son calcul aux lignes du groupe satisfaisant cette condition, sans avoir besoin de sous-requêtes séparées ni de plusieurs passes sur la table. Sur des moteurs ne supportant pas FILTER, l'équivalent est COUNT(CASE WHEN condition THEN 1 END) (ou SUM(CASE WHEN condition THEN 1 ELSE 0 END)), qui produit le même résultat en une seule requête et un seul GROUP BY.",
+    "commonTrap": "Écrire deux requêtes séparées (une par statut) puis les combiner côté application, alors qu'une seule requête avec agrégation conditionnelle suffit et est plus efficace.",
+    "keyConcept": "conditional-aggregation-filter",
+    "tags": ["SQL", "agrégation"],
+    "relatedQuestionIds": ["Q07"],
+    "reviewIntervals": [1, 3, 7, 14],
+    "isOriginalPdfContent": false,
+    "proofType": "code"
   }
 ]
