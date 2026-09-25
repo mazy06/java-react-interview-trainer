@@ -23,6 +23,7 @@ export interface AlgoKata {
   approaches: AlgoApproach[]
   lang: 'java' | 'javascript'
   code: string
+  explanation: string
   verdict: string
 }
 

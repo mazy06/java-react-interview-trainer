@@ -30,6 +30,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     }
     throw new IllegalArgumentException("Aucune paire trouvée");
 }`,
+    explanation:
+      "On parcourt le tableau une seule fois : pour chaque nombre, on vérifie si son complément (cible − nombre) a déjà été vu et stocké dans la HashMap ; sinon, on ajoute le nombre courant à la HashMap avec son index.",
     verdict:
       "On échange O(n) d'espace contre O(n) de temps au lieu de O(n²) — rentable dès quelques dizaines d'éléments.",
   },
@@ -49,6 +51,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     for (int n : nums) if (!seen.add(n)) return true;
     return false;
 }`,
+    explanation:
+      "add() renvoie false si l'élément était déjà présent dans le Set : on le teste directement dans la condition, sans avoir besoin d'un contains() séparé avant l'ajout.",
     verdict:
       'Le tri en place reste préférable si la mémoire est contrainte ; le HashSet gagne si le temps prime.',
   },
@@ -69,6 +73,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     for (char c : b.toCharArray()) if (--freq[c - 'a'] < 0) return false;
     return true;
 }`,
+    explanation:
+      "On incrémente un compteur par lettre en lisant la première chaîne, puis on décrémente ces mêmes compteurs en lisant la seconde ; si un compteur devient négatif, une lettre apparaît plus souvent dans b que dans a.",
     verdict:
       "Le comptage évite le coût O(n log n) du tri — c'est un problème de fréquence, pas d'ordre.",
   },
@@ -88,6 +94,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     for (var e : freq.entrySet()) if (e.getValue() == 1) return e.getKey();
     return '\\0';
 }`,
+    explanation:
+      "Une première passe compte les occurrences de chaque caractère dans une Map qui conserve l'ordre d'insertion ; une seconde passe retourne le premier caractère dont le compteur vaut exactement 1.",
     verdict: 'Une table de hachage transforme un problème quadratique en deux passes linéaires.',
   },
   {
@@ -108,6 +116,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     }
     return best;
 }`,
+    explanation:
+      "À chaque élément, on choisit entre prolonger la somme courante ou repartir de zéro à cet élément, selon ce qui donne le plus grand résultat ; on garde en mémoire la meilleure somme rencontrée.",
     verdict: "Un cumul déjà négatif ne peut jamais aider la suite — pas besoin de le retester.",
   },
   {
@@ -130,6 +140,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     }
     return best;
 }`,
+    explanation:
+      "On calcule la somme de la première fenêtre, puis on la fait glisser d'un cran à la fois : on ajoute l'élément qui entre dans la fenêtre et on retire celui qui en sort.",
     verdict: "Réutiliser la somme précédente évite de recompter k éléments à chaque décalage.",
   },
   {
@@ -152,6 +164,8 @@ export const ALGORITHM_KATAS: AlgoKata[] = [
     }
     return new int[]{-1, -1};
 }`,
+    explanation:
+      "Un pointeur part du début et l'autre de la fin ; si la somme est trop petite on avance le pointeur gauche (pour l'augmenter), si elle est trop grande on recule le pointeur droit (pour la diminuer).",
     verdict: "Exploiter le tri existant bat le HashMap en espace (O(1) au lieu de O(n)).",
   },
   {
@@ -176,6 +190,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return false;
 }`,
+    explanation:
+      "Le pointeur du texte (i) n'avance jamais en arrière ; en cas d'échec, la table lps indique de combien de positions reculer le pointeur du motif (j), sans revenir sur des caractères du texte déjà comparés.",
     verdict:
       "KMP ne revient jamais en arrière dans le texte, contre O(n·m) au pire pour l'approche naïve.",
   },
@@ -198,6 +214,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return -1;
 }`,
+    explanation:
+      "À chaque itération, on compare la cible à l'élément du milieu et on élimine la moitié du tableau qui ne peut pas la contenir, jusqu'à trouver la cible ou épuiser l'intervalle de recherche.",
     verdict:
       "Diviser l'espace par 2 à chaque étape bat toute recherche linéaire — mais exige un tableau trié.",
   },
@@ -220,6 +238,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     quickSort(a, lo, i - 1);
     quickSort(a, i + 1, hi);
 }`,
+    explanation:
+      "Le dernier élément sert de pivot ; on repousse à gauche tous les éléments plus petits que lui, puis on le place à sa position finale et on trie récursivement les deux partitions de part et d'autre.",
     verdict:
       "Rapide et en place en pratique, mais dégénère en O(n²) sur un tableau déjà trié avec un pivot naïf.",
   },
@@ -237,6 +257,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     int[] right = mergeSort(Arrays.copyOfRange(a, mid, a.length));
     return merge(left, right);
 }`,
+    explanation:
+      "On divise le tableau en deux moitiés récursivement jusqu'à des tableaux d'un seul élément, puis on les fusionne deux à deux en ordre croissant en remontant la récursion.",
     verdict:
       'Garanti O(n log n) dans tous les cas (contrairement à QuickSort), au prix de O(n) d’espace.',
   },
@@ -259,8 +281,9 @@ static boolean contains(String text, String pattern, int[] lps) {
         for (int c = 0; c < count[v]; c++) result[idx++] = v;
     return result;
 }`,
-    verdict:
-      "Bat la borne O(n log n) des tris par comparaison — seulement si k reste raisonnable.",
+    explanation:
+      "On compte combien de fois chaque valeur apparaît dans un tableau indexé par la valeur elle-même, puis on reconstruit le tableau trié en parcourant ces compteurs dans l'ordre croissant.",
+    verdict: "Bat la borne O(n log n) des tris par comparaison — seulement si k reste raisonnable.",
   },
   {
     id: 'kth-largest',
@@ -281,6 +304,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return minHeap.peek();
 }`,
+    explanation:
+      "On maintient un tas-min de taille k : chaque nouvel élément est ajouté, et dès que le tas dépasse k éléments, le plus petit est retiré ; à la fin, le sommet du tas est le k-ième plus grand.",
     verdict:
       "Le tas évite de trier tout le tableau ; Quickselect va plus loin en évitant même de trier les k retenus.",
   },
@@ -303,6 +328,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return false;
 }`,
+    explanation:
+      "En partant du coin supérieur droit, une valeur trop grande élimine toute sa colonne (on va à gauche) et une valeur trop petite élimine toute sa ligne (on descend d'une ligne).",
     verdict: 'Chaque comparaison élimine une ligne ou une colonne entière — de O(m·n) à O(m+n).',
   },
   {
@@ -325,6 +352,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return prev;
 }`,
+    explanation:
+      "On avance nœud par nœud en inversant à chaque étape le pointeur next pour qu'il pointe vers le nœud précédent, en sauvegardant d'abord une référence vers le nœud suivant avant de la perdre.",
     verdict:
       "Même temps, mais l'itérative évite tout risque de StackOverflowError sur une longue liste.",
   },
@@ -347,6 +376,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return false;
 }`,
+    explanation:
+      "Deux pointeurs parcourent la liste à des vitesses différentes (un pas et deux pas) ; s'il existe un cycle, le pointeur rapide finit toujours par rattraper le lent à l'intérieur de la boucle.",
     verdict:
       'Même complexité en temps que le HashSet, mais espace constant — le classique testé en entretien.',
   },
@@ -367,6 +398,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     tail.next = (a != null) ? a : b;
     return dummy.next;
 }`,
+    explanation:
+      "Un nœud sentinelle sert de point de départ fictif ; à chaque étape on rattache le plus petit des deux nœuds en tête de chaque liste, puis on avance dans la liste correspondante.",
     verdict: "Un nœud sentinelle (dummy) évite de traiter le premier nœud comme un cas particulier.",
   },
   {
@@ -388,6 +421,8 @@ static boolean contains(String text, String pattern, int[] lps) {
             if (visited.add(next)) queue.add(next);
     }
 }`,
+    explanation:
+      "Une file (FIFO) garantit que les nœuds sont traités dans l'ordre où ils ont été découverts, donc niveau par niveau ; un Set évite de retraiter un même nœud plusieurs fois.",
     verdict:
       'Même temps — le choix dépend du besoin : plus court chemin → BFS, exploration/backtracking → DFS.',
   },
@@ -405,6 +440,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     if (node == null) return 0;
     return 1 + Math.max(height(node.left), height(node.right));
 }`,
+    explanation:
+      "La hauteur d'un nœud vide vaut 0 ; sinon, elle vaut 1 plus la plus grande des hauteurs de ses deux sous-arbres, calculées récursivement de la même façon.",
     verdict:
       "Combiner hauteur et vérification d'équilibre en une récursion évite de retraverser les mêmes sous-arbres.",
   },
@@ -428,6 +465,8 @@ static boolean contains(String text, String pattern, int[] lps) {
     }
     return null;
 }`,
+    explanation:
+      "Grâce à l'ordre du BST, on sait si les deux valeurs cherchées sont toutes les deux à gauche, toutes les deux à droite, ou de part et d'autre du nœud courant — dans ce dernier cas, ce nœud est l'ancêtre commun.",
     verdict:
       "La propriété d'ordre d'un BST transforme un parcours en une simple descente — inapplicable sur un arbre non trié.",
   },
@@ -448,6 +487,8 @@ static boolean contains(String text, String pattern, int[] lps) {
 static void union(int[] parent, int a, int b) {
     parent[find(parent, a)] = find(parent, b);
 }`,
+    explanation:
+      "find() remonte la chaîne des parents jusqu'à la racine du groupe et reconnecte au passage chaque nœud visité directement à cette racine ; union() relie ensuite les racines de deux groupes entre eux.",
     verdict:
       "La compression de chemin rend chaque recherche quasi instantanée pour un grand nombre d'arêtes.",
   },
@@ -467,6 +508,8 @@ static void union(int[] parent, int a, int b) {
     for (int i = 0; i < n; i++) { long next = a + b; a = b; b = next; }
     return a;
 }`,
+    explanation:
+      "On garde seulement les deux derniers termes (a et b) et on avance itérativement : à chaque tour, b devient a+b et a prend l'ancienne valeur de b.",
     verdict:
       "La mémoïsation élimine la recomputation exponentielle ; l'itératif élimine aussi la pile d'appels.",
   },
@@ -494,6 +537,8 @@ static void union(int[] parent, int a, int b) {
         for (int c : coins) if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
     return dp[amount];
 }`,
+    explanation:
+      "dp[a] contient le nombre minimal de pièces pour rendre le montant a ; pour chaque montant croissant, on essaie chaque pièce utilisable et on garde le meilleur résultat obtenu via dp[a-pièce] + 1.",
     verdict:
       "Piège classique : le glouton est plus rapide mais pas toujours correct (ex. pièces 1, 3, 4 pour 6) ; la DP l'est toujours.",
   },
@@ -515,6 +560,8 @@ static void union(int[] parent, int a, int b) {
             dp[w] = Math.max(dp[w], dp[w - weights[i]] + values[i]);
     return dp[capacity];
 }`,
+    explanation:
+      "dp[w] contient la valeur maximale atteignable avec une capacité w ; parcourir les poids à l'envers pour chaque objet garantit qu'un même objet n'est jamais compté deux fois dans la même itération.",
     verdict:
       "Parcourir la capacité à l'envers évite de réutiliser un même objet deux fois — piège classique.",
   },
@@ -535,6 +582,8 @@ static void union(int[] parent, int a, int b) {
         return size() > capacity;
     }
 }`,
+    explanation:
+      "Le troisième paramètre true du constructeur active l'accessOrder, qui replace automatiquement une entrée en fin d'ordre à chaque lecture ou écriture ; removeEldestEntry() est appelée après chaque insertion pour évincer l'entrée la plus ancienne si la capacité est dépassée.",
     verdict:
       "LinkedHashMap en mode accessOrder réordonne seul les entrées — pas besoin de coder la liste chaînée à la main.",
   },
@@ -559,6 +608,8 @@ static void union(int[] parent, int a, int b) {
 queue.put(task);   // bloque si la file est pleine
 // Consommateur
 Task task = queue.take(); // bloque si la file est vide`,
+    explanation:
+      "put() met le thread producteur en attente si la file est pleine, take() met le thread consommateur en attente si elle est vide — toute la synchronisation nécessaire est gérée en interne par la classe.",
     verdict:
       'Même complexité, mais wait/notify expose à des bugs subtils (réveils intempestifs, interblocages) que BlockingQueue évite nativement.',
   },
@@ -580,6 +631,8 @@ Task task = queue.take(); // bloque si la file est vide`,
     timer = setTimeout(() => fn(...args), delay);
   };
 }`,
+    explanation:
+      "Chaque nouvel appel annule le minuteur précédent (clearTimeout) et en programme un nouveau ; seul le dernier appel dont le minuteur va jusqu'au bout finit par déclencher réellement fn.",
     verdict:
       "Annule le minuteur précédent à chaque appel — seule la dernière frappe après la pause déclenche fn.",
   },
@@ -602,6 +655,8 @@ Task task = queue.take(); // bloque si la file est vide`,
     setTimeout(() => (inCooldown = false), limit);
   };
 }`,
+    explanation:
+      "Le premier appel s'exécute immédiatement puis verrouille les appels suivants (inCooldown) pendant limit millisecondes ; une fois ce délai écoulé, un nouvel appel pourra à nouveau passer.",
     verdict:
       "Contrairement au debounce, le throttle garantit une exécution régulière même si l'activité ne s'arrête jamais.",
   },
@@ -623,6 +678,8 @@ Task task = queue.take(); // bloque si la file est vide`,
     lang: 'javascript',
     code: `const clone = structuredClone(original);
 // natif depuis Node 17 / navigateurs modernes`,
+    explanation:
+      "structuredClone parcourt récursivement la structure de l'objet et en reconstruit une copie complète, en gérant nativement les types complexes (Date, Map, Set) et les références circulaires.",
     verdict:
       'Même complexité, mais structuredClone gère Date, Map, Set et les cycles que JSON casse silencieusement.',
   },
@@ -645,6 +702,8 @@ Task task = queue.take(); // bloque si la file est vide`,
     return result;
   };
 }`,
+    explanation:
+      "Avant de calculer, on vérifie si le résultat pour cet argument est déjà dans le cache ; si oui on le renvoie directement, sinon on calcule, on stocke le résultat, puis on le renvoie.",
     verdict:
       'Exactement le principe derrière useMemo/useCallback en React — éviter un calcul ou une fonction déjà identique.',
   },
@@ -661,6 +720,8 @@ Task task = queue.take(); // bloque si la file est vide`,
     code: `const startIndex = Math.floor(scrollTop / itemHeight);
 const endIndex = startIndex + Math.ceil(viewportHeight / itemHeight);
 const visibleItems = allItems.slice(startIndex, endIndex);`,
+    explanation:
+      "On calcule à partir de la position de défilement (scrollTop) quels indices d'éléments sont actuellement visibles à l'écran, et on ne garde (slice) que cette tranche du tableau complet à rendre.",
     verdict:
       "Le coût de rendu devient indépendant de la taille totale — seul le nombre d'éléments visibles compte.",
   },
@@ -687,6 +748,8 @@ const visibleItems = allItems.slice(startIndex, endIndex);`,
   );
 }
 // Équivalent natif : arr.flat(Infinity)`,
+    explanation:
+      "reduce() parcourt chaque élément : si c'est un tableau, on l'aplatit récursivement avant de le concaténer au résultat ; sinon, on le concatène directement.",
     verdict:
       "La récursion s'adapte à n'importe quelle profondeur, contrairement à des boucles imbriquées codées en dur.",
   },

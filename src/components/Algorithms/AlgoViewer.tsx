@@ -1,6 +1,7 @@
 import { AlertTriangle } from 'lucide-react'
 import { Card, CardBody } from '../ui/Card'
 import { Badge } from '../ui/Badge'
+import { highlightCode } from '../../lib/syntaxHighlight'
 import type { AlgoKata } from '../../types/algorithm'
 
 const TIER_TONE = {
@@ -73,8 +74,15 @@ export function AlgoViewer({ kata, index }: AlgoViewerProps) {
             </span>
           </div>
           <pre className="whitespace-pre-wrap break-words rounded-lg bg-slate-900 p-4 font-mono text-xs leading-relaxed text-slate-100">
-            <code>{kata.code}</code>
+            <code>{highlightCode(kata.code, kata.lang)}</code>
           </pre>
+        </div>
+
+        <div>
+          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Comment ça marche
+          </p>
+          <p className="text-sm text-slate-600">{kata.explanation}</p>
         </div>
       </CardBody>
     </Card>
