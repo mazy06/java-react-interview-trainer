@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { AlertTriangle, ChevronRight } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
 import { Card, CardBody } from '../ui/Card'
 import { Badge } from '../ui/Badge'
 import type { AlgoKata } from '../../types/algorithm'
@@ -11,22 +10,20 @@ const TIER_TONE = {
   4: 'danger',
 } as const
 
-interface AlgoCardProps {
+interface AlgoViewerProps {
   kata: AlgoKata
   index: number
 }
 
-export function AlgoCard({ kata, index }: AlgoCardProps) {
-  const [showCode, setShowCode] = useState(false)
-
+export function AlgoViewer({ kata, index }: AlgoViewerProps) {
   return (
     <Card>
-      <CardBody className="flex flex-col gap-3">
+      <CardBody className="flex flex-col gap-4">
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-xs text-slate-400">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <h3 className="text-base font-semibold text-slate-900">{kata.title}</h3>
+          <h2 className="text-lg font-semibold text-slate-900">{kata.title}</h2>
         </div>
         <p className="text-sm text-slate-600">{kata.problem}</p>
 
@@ -66,32 +63,19 @@ export function AlgoCard({ kata, index }: AlgoCardProps) {
 
         <p className="border-l-2 border-brand-500 pl-3 text-sm text-slate-600">{kata.verdict}</p>
 
-        <button
-          type="button"
-          onClick={() => setShowCode((prev) => !prev)}
-          aria-expanded={showCode}
-          className="flex items-center gap-1 self-start text-xs font-semibold text-brand-700
-            transition-colors duration-200 ease-out motion-reduce:transition-none hover:text-brand-800
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-            focus-visible:outline-brand-600"
-        >
-          <ChevronRight
-            className={`h-3.5 w-3.5 transition-transform duration-150 ease-out motion-reduce:transition-none ${
-              showCode ? 'rotate-90' : ''
-            }`}
-            aria-hidden="true"
-          />
-          {showCode ? 'Masquer le code' : 'Voir le code'}
-          <span className="ml-2 font-mono text-[11px] uppercase tracking-wide text-slate-400">
-            {kata.lang}
-          </span>
-        </button>
-
-        {showCode && (
-          <pre className="overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-xs leading-relaxed text-slate-100">
+        <div>
+          <div className="mb-1.5 flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Code de référence
+            </p>
+            <span className="font-mono text-[11px] uppercase tracking-wide text-slate-400">
+              {kata.lang}
+            </span>
+          </div>
+          <pre className="whitespace-pre-wrap break-words rounded-lg bg-slate-900 p-4 font-mono text-xs leading-relaxed text-slate-100">
             <code>{kata.code}</code>
           </pre>
-        )}
+        </div>
       </CardBody>
     </Card>
   )

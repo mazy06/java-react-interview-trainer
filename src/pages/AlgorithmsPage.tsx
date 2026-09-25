@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ALGORITHM_KATAS, ALGO_CATEGORIES } from '../data/algorithms'
-import { AlgoCard } from '../components/Algorithms/AlgoCard'
+import { AlgoViewer } from '../components/Algorithms/AlgoViewer'
 import type { AlgoCategory } from '../types/algorithm'
 
 const LEGEND = [
@@ -27,6 +27,7 @@ function pillClass(active: boolean) {
 export function AlgorithmsPage() {
   const [query, setQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<AlgoCategory | 'all'>('all')
+  const [selectedId, setSelectedId] = useState<string>(ALGORITHM_KATAS[0].id)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -37,8 +38,16 @@ export function AlgorithmsPage() {
     })
   }, [query, activeCategory])
 
+  useEffect(() => {
+    if (filtered.length > 0 && !filtered.some((kata) => kata.id === selectedId)) {
+      setSelectedId(filtered[0].id)
+    }
+  }, [filtered, selectedId])
+
+  const selected = filtered.find((kata) => kata.id === selectedId) ?? filtered[0] ?? null
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <header className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
           Préparation entretien technique
@@ -108,25 +117,57 @@ export function AlgorithmsPage() {
         </span>
       </div>
 
-      {ALGO_CATEGORIES.map((cat) => {
-        const items = filtered.filter((kata) => kata.category === cat.key)
-        if (items.length === 0) return null
-        return (
-          <section key={cat.key} className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">{cat.label}</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              {items.map((kata) => (
-                <AlgoCard key={kata.id} kata={kata} index={ALGORITHM_KATAS.indexOf(kata)} />
-              ))}
-            </div>
-          </section>
-        )
-      })}
-
-      {filtered.length === 0 && (
+      {filtered.length === 0 || !selected ? (
         <p className="py-16 text-center text-sm text-slate-500">
           Aucun kata ne correspond à cette recherche.
         </p>
+      ) : (
+        <div className="grid gap-4 md:h-[75vh] md:grid-cols-[280px_1fr]">
+          <nav
+            aria-label="Liste des katas"
+            className="overflow-y-auto rounded-xl border border-slate-200 bg-white md:h-full"
+          >
+            {ALGO_CATEGORIES.map((cat) => {
+              const items = filtered.filter((kata) => kata.category === cat.key)
+              if (items.length === 0) return null
+              return (
+                <div key={cat.key}>
+                  <p className="sticky top-0 border-b border-slate-100 bg-slate-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    {cat.label}
+                  </p>
+                  <ul>
+                    {items.map((kata) => {
+                      const isSelected = kata.id === selected.id
+                      return (
+                        <li key={kata.id}>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedId(kata.id)}
+                            aria-current={isSelected}
+                            className={`flex w-full items-center gap-1.5 border-b border-slate-50 px-3 py-2 text-left text-sm
+                              transition-colors duration-200 ease-out motion-reduce:transition-none
+                              focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
+                              focus-visible:outline-brand-600
+                              ${isSelected ? 'bg-brand-50 font-medium text-brand-700' : 'text-slate-700 hover:bg-slate-50'}`}
+                          >
+                            <span className="font-mono text-xs text-slate-400">
+                              {String(ALGORITHM_KATAS.indexOf(kata) + 1).padStart(2, '0')}
+                            </span>
+                            {kata.title}
+                          </button>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )
+            })}
+          </nav>
+
+          <div className="overflow-y-auto md:h-full">
+            <AlgoViewer kata={selected} index={ALGORITHM_KATAS.indexOf(selected)} />
+          </div>
+        </div>
       )}
     </div>
   )
